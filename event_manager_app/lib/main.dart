@@ -1,4 +1,3 @@
-import 'package:event_manager_app/ListTileExample.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,10 +7,12 @@ void main() {
 class Event {
   String title;
   String desctiption;
+  bool completed;
 
   Event({
     required this.title,
     required this.desctiption,
+    required this.completed,
   });
 }
 
@@ -19,10 +20,12 @@ List<Event> events = [
   Event(
     title: 'Coachella',
     desctiption: 'concert',
+    completed: false,
   ),
   Event(
     title: 'Milano Fashon Week',
     desctiption: 'parade',
+    completed: false,
   ),
 ];
 
@@ -40,11 +43,17 @@ class MyApp extends StatelessWidget {
         ),
         body: SafeArea(
           child: ListView.builder(
-            itemCount: events.length,
+            itemCount: events.length*2-1,
             itemBuilder: (context, index) {
-              Event ev = events[index];
+              if (index.isOdd) 
+                return Divider();
+              final eventsIndex = index ~/2;
+              Event ev = events[eventsIndex];
               return ListTile(
-                  title: Text(ev.title), 
+                  title: Text(
+                    ev.title,
+                    style: TextStyle(background: Paint()..color = Colors.cyan)
+                  ), 
                   subtitle: Text(ev.desctiption)
               );
             }
