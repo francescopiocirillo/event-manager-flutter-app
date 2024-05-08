@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       date: DateTime(2024, 5, 7, 15, 30),
       expectedParticipants: 300,
       actualParticipants:  200,
-      img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),
+      /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
     ),
     Event(
       title: 'Milano Fashon Week',
