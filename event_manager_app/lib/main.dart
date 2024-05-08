@@ -8,11 +8,13 @@ class Event {
   String title;
   String desctiption;
   bool completed;
+  DateTime date;
 
   Event({
     required this.title,
     required this.desctiption,
     required this.completed,
+    required this.date,
   });
 }
 
@@ -21,11 +23,13 @@ List<Event> events = [
     title: 'Coachella',
     desctiption: 'concert',
     completed: false,
+    date: DateTime(2024, 5, 7, 15, 30),
   ),
   Event(
     title: 'Milano Fashon Week',
     desctiption: 'parade',
     completed: false,
+    date: DateTime(2024, 2, 10, 08, 30),
   ),
 ];
 
@@ -54,7 +58,8 @@ class MyApp extends StatelessWidget {
                     ev.title,
                     style: TextStyle(background: Paint()..color = Colors.cyan)
                   ), 
-                  subtitle: Text(ev.desctiption)
+                  subtitle:  Text(ev.desctiption)
+
               );
             }
           )
