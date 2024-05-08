@@ -14,8 +14,6 @@ class EventDetailPage extends StatelessWidget {
         ),
         body: SafeArea(
           child: Text(title),
-
-
         ),
       );
   }
