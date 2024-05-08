@@ -1,3 +1,4 @@
+import 'package:event_manager_app/event_detail_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -49,8 +50,9 @@ class MyApp extends StatelessWidget {
           child: ListView.builder(
             itemCount: events.length*2-1,
             itemBuilder: (context, index) {
-              if (index.isOdd) 
-                return Divider();
+              if (index.isOdd) {
+                return const Divider();
+              }
               final eventsIndex = index ~/2;
               Event ev = events[eventsIndex];
               return ListTile(
@@ -58,7 +60,13 @@ class MyApp extends StatelessWidget {
                     ev.title,
                     style: TextStyle(background: Paint()..color = Colors.cyan)
                   ), 
-                  subtitle:  Text(ev.desctiption)
+                  subtitle:  Text(ev.desctiption),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventDetailPage(title: ev.title))
+                    );
+                  },
 
               );
             }
@@ -67,4 +75,5 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
 }
