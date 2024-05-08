@@ -1,4 +1,5 @@
 import 'package:event_manager_app/event_detail_page.dart';
+import 'package:event_manager_app/new_event.dart';
 import  'package:flutter/material.dart';
 
 class Event {
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                         ev.title,
                         style: TextStyle(background: Paint()..color = Colors.cyan)
                       ), 
-                      subtitle:  Text(ev.desctiption),
+                      subtitle:  Text(ev.desctiption + ev.date.toString()),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -92,6 +93,23 @@ class _HomePageState extends State<HomePage> {
               );
             }
           )
+        ),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewEvent())
+          ).then((newEvent) {
+                print("coco");
+                print(newEvent);
+                if(newEvent != null) {
+                  setState((){
+                    events.add(newEvent);
+                  });
+                }
+            });
+        },
+        
+        child: const Icon(Icons.add),
         ),
       );
   }
