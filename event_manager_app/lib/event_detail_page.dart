@@ -6,11 +6,10 @@ class EventDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Event Manager',
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.cyan,
+          centerTitle: true,
           title: Text('Event Manager'),
         ),
         body: SafeArea(
@@ -18,7 +17,6 @@ class EventDetailPage extends StatelessWidget {
 
 
         ),
-      ), 
-    );   
+      );
   }
 }
