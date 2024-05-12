@@ -172,6 +172,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               SearchBar(
                 onChanged: filterEvents,
+                hintText: "Search by title",
               ),
               Expanded(
                 child: ListView.builder(
