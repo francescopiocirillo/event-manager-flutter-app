@@ -1,6 +1,7 @@
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
 import  'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class Event {
@@ -12,7 +13,7 @@ class Event {
   TimeOfDay startHour;
   int expectedParticipants;
   int actualParticipants;
-  /*File img;*/
+  String img;
   
 
   Event({
@@ -24,7 +25,7 @@ class Event {
     required this.startHour,
     required this.expectedParticipants,
     required this.actualParticipants,
-    /*required this.img,*/
+    required this.img,
   });
 }
 
@@ -46,6 +47,7 @@ class _HomePageState extends State<HomePage> {
       startHour: TimeOfDay(hour: 12, minute: 00),
       expectedParticipants: 300,
       actualParticipants:  200,
+      img: 'assets/romantico.jpg',
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
     ),
     Event(
@@ -57,6 +59,7 @@ class _HomePageState extends State<HomePage> {
       startHour: TimeOfDay(hour: 22, minute: 30),
       expectedParticipants: 5000,
       actualParticipants: 4600,
+      img: 'assets/cena.png',
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
     ),
   ];
@@ -78,13 +81,20 @@ class _HomePageState extends State<HomePage> {
                 child: Card(
                   child: Column(
                     children: [
-                      /*Image.file(
-                        ev.img
-                      ),*/
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: Image.asset(
+                            ev.img,
+                            fit: BoxFit.cover
+                          ),
+                        ),
+                      ),
                       ListTile(
                         title: Text(
                           ev.title,
-                        ), 
+                        ),
                         subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
                       ),
                       Padding(

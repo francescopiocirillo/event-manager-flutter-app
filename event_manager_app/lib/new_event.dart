@@ -129,7 +129,7 @@ class _NewEventState extends State<NewEvent> {
                     },
                     child: Container(
                       decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
-                      child: CircleAvatar(backgroundImage: AssetImage("assets/coachella.jpg"), radius: 60,),
+                      child: CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 60,),
                     ),
                   ),
                 ),
@@ -142,7 +142,7 @@ class _NewEventState extends State<NewEvent> {
                     },
                     child: Container(
                       decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
-                      child: CircleAvatar(backgroundImage: AssetImage("assets/coachella.jpg"), radius: 60,),
+                      child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
                     ),
                   ),
                 ),
@@ -155,7 +155,7 @@ class _NewEventState extends State<NewEvent> {
                     },
                     child: Container(
                       decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
-                      child: CircleAvatar(backgroundImage: AssetImage("assets/coachella.jpg"), radius: 60,),
+                      child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
                     ),
                   ),
                 ),
@@ -196,7 +196,7 @@ class _NewEventState extends State<NewEvent> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context, Event(title: textNomeController.text, desctiption: textDescrizioneController.text, 
-          completed: false, startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: 3, actualParticipants: 0));
+          completed: false, startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: 3, actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
         },
         child: const Icon(Icons.send_rounded),
       ),
