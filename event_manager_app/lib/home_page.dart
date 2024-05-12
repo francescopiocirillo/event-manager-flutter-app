@@ -64,6 +64,8 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
+  int currentPageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +73,8 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.tealAccent[700],
           title: Text('Event Manager'),
         ),
-        body: SafeArea(
+        body: <Widget>[
+          SafeArea(
           child: ListView.builder(
             itemCount: events.length,
             itemBuilder: (context, index) {
@@ -114,13 +117,15 @@ class _HomePageState extends State<HomePage> {
             }
           )
         ),
+        Text("Paperino"),
+        Text("Pippo"),
+        ][currentPageIndex],
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => NewEvent())
             ).then((newEvent) {
-                  print("coco");
                   print(newEvent);
                   if(newEvent != null) {
                     setState((){
@@ -131,6 +136,26 @@ class _HomePageState extends State<HomePage> {
           },
           child: const Icon(Icons.add),
         ),
+        bottomNavigationBar: NavigationBar(
+            onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.style_rounded),
+            label: 'Menage',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.ssid_chart_rounded),
+            label: 'Statistics',
+          ),
+        ],)
       );
   }
 }
