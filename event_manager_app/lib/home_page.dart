@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                         title: Text(
                           ev.title,
                         ), 
-                        subtitle:  Text("From ${DateFormat('yyyy-MM-dd').format(ev.startDate)} at ${DateFormat('kk:mm').format(ev.startDate)}\nTo ${DateFormat('yyyy-MM-dd').format(ev.endDate)}"),
+                        subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
