@@ -96,8 +96,14 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 children: <Widget>[
-                  Icon(Icons.ac_unit),
-                  Icon(Icons.call)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Past events"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Incoming events"),
+                  ),
                 ],
               ),
               Expanded(
@@ -106,40 +112,45 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context, index) {
                     final eventsIndex = index;
                     Event ev = events[eventsIndex];
-                    return InkWell(
-                      child: Card(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                child: Image.asset(
-                                  ev.img,
-                                  fit: BoxFit.cover
+                    if(isSelected[0] && ev.endDate.compareTo(DateTime.now()) < 0 || isSelected[1] && ev.endDate.compareTo(DateTime.now()) >= 0) {
+                      return InkWell(
+                        child: Card(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * 0.8,
+                                  child: Image.asset(
+                                    ev.img,
+                                    fit: BoxFit.cover
+                                  ),
                                 ),
                               ),
-                            ),
-                            ListTile(
-                              title: Text(
-                                ev.title,
+                              ListTile(
+                                title: Text(
+                                  ev.title,
+                                ),
+                                subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
                               ),
-                              subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(ev.desctiption),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(ev.desctiption),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
-                          );
-                        },
-                    );
+                        onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
+                            );
+                          },
+                      );
+                    }
+                    else {
+                      return SizedBox.shrink();
+                    }
                   }
                 ),
               ),
