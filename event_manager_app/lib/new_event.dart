@@ -21,7 +21,7 @@ class _NewEventState extends State<NewEvent> {
   DateTime endDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
   double expectedParticipants = 12;
-
+  
   Future<void> _selectDates(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context, 
