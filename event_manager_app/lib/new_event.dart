@@ -14,55 +14,13 @@ class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
   String datePrompt = "Select dates of the event";
-  String timePrompt = "Select event's start hour lollo";
+  String timePrompt = "Select event's beginning hour";
   int _selectedImage = 0;
-/*
-  Future<DateTime?> showDateTimePicker({
-  required BuildContext context,
-  DateTime? initialDate,
-  DateTime? firstDate,
-  DateTime? lastDate,
-}) async {
-    initialDate ??= DateTime.now();
-    firstDate ??= initialDate.subtract(const Duration(days: 365 * 100));
-    lastDate ??= firstDate.add(const Duration(days: 365 * 200));
-
-    final DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-    );
-
-    if (selectedDate == null) return null;
-
-    if (!context.mounted) return selectedDate;
-
-    final TimeOfDay? selectedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(selectedDate),
-    );
-
-    setState(() {
-      selectedDateTime = selectedTime == null
-          ? selectedDate
-          : DateTime(
-              selectedDate.year,
-              selectedDate.month,
-              selectedDate.day,
-              selectedTime.hour,
-              selectedTime.minute,
-            );
-      
-      dateTimePrompt = "Selected date/time: " + DateFormat('yyyy-MM-dd – kk:mm').format(selectedDateTime);;
-    });
-    
-  }
-*/
-  DateTimeRange selectedDates= DateTimeRange(start: DateTime.now(), end: DateTime.now());
-  DateTime startDate= DateTime.now();
-  DateTime endDate= DateTime.now();
-  TimeOfDay startTime= TimeOfDay(hour: 12, minute: 00);
+  DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
+  double expectedParticipants = 12;
 
   Future<void> _selectDates(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
@@ -128,7 +86,7 @@ class _NewEventState extends State<NewEvent> {
                       });
                     },
                     child: Container(
-                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
+                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
                       child: CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 60,),
                     ),
                   ),
@@ -141,7 +99,7 @@ class _NewEventState extends State<NewEvent> {
                       });
                     },
                     child: Container(
-                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
+                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
                       child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
                     ),
                   ),
@@ -154,7 +112,7 @@ class _NewEventState extends State<NewEvent> {
                       });
                     },
                     child: Container(
-                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
+                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
                       child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
                     ),
                   ),
@@ -179,8 +137,24 @@ class _NewEventState extends State<NewEvent> {
                   border: OutlineInputBorder(),
                   hintText: 'Inserire la descrizione dell\'evento',
                 ),
-                maxLines: 8,
+                maxLines: 5,
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text("Insert number of expected participants"),
+            ),
+            Slider(
+              value: expectedParticipants,
+              min: 0,
+              max: 500,
+              divisions: 500,
+              label: expectedParticipants.toStringAsFixed(0),
+              onChanged: (newValue) {
+                setState(() {
+                  expectedParticipants = newValue;
+                });
+              },
             ),
             ElevatedButton(
               onPressed: () => _selectDates(context),
@@ -189,14 +163,14 @@ class _NewEventState extends State<NewEvent> {
             ElevatedButton(
               onPressed: () => selectedTime(context),
               child: Text(timePrompt),
-            )
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context, Event(title: textNomeController.text, desctiption: textDescrizioneController.text, 
-          completed: false, startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: 3, actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
+          completed: false, startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
         },
         child: const Icon(Icons.send_rounded),
       ),
