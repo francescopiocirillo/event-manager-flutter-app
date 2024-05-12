@@ -1,6 +1,7 @@
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewEvent extends StatefulWidget {
   const NewEvent({super.key});
@@ -12,6 +13,7 @@ class NewEvent extends StatefulWidget {
 class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
+  String dateTimePrompt = "Select date/time of the event";
 /*
   Future<DateTime?> showDateTimePicker({
   required BuildContext context,
@@ -39,15 +41,20 @@ class _NewEventState extends State<NewEvent> {
       initialTime: TimeOfDay.fromDateTime(selectedDate),
     );
 
-    selectedDateTime = selectedTime == null
-        ? selectedDate
-        : DateTime(
-            selectedDate.year,
-            selectedDate.month,
-            selectedDate.day,
-            selectedTime.hour,
-            selectedTime.minute,
-          );
+    setState(() {
+      selectedDateTime = selectedTime == null
+          ? selectedDate
+          : DateTime(
+              selectedDate.year,
+              selectedDate.month,
+              selectedDate.day,
+              selectedTime.hour,
+              selectedTime.minute,
+            );
+      
+      dateTimePrompt = "Selected date/time: " + DateFormat('yyyy-MM-dd – kk:mm').format(selectedDateTime);;
+    });
+    
   }
 */
   DateTimeRange selectedDates= DateTimeRange(start: DateTime.now(), end: DateTime.now());
@@ -122,7 +129,7 @@ class _NewEventState extends State<NewEvent> {
             ),
             ElevatedButton(
               onPressed: () => _selectDates(context),
-              child: Text('Select event\'s date'),
+              child: Text(dateTimePrompt),
             ),
             ElevatedButton(
               onPressed: () => selectedTime(context),
