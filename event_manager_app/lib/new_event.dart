@@ -74,7 +74,7 @@ class _NewEventState extends State<NewEvent> {
       setState(() {
         startDate = picked.start;
         endDate = picked.end;
-        datePrompt = "Selected date: " + DateFormat("EEE, MMM d, yyyy").format(startDate)+" / "+
+        datePrompt = "Selected date:\n" + DateFormat("EEE, MMM d, yyyy").format(startDate)+" / "+
           DateFormat("EEE, MMM d, yyyy").format(endDate) ;
       });
     }
