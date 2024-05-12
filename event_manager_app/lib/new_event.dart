@@ -13,6 +13,60 @@ class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
 
+  Future<DateTime?> showDateTimePicker({
+  required BuildContext context,
+  DateTime? initialDate,
+  DateTime? firstDate,
+  DateTime? lastDate,
+}) async {
+    initialDate ??= DateTime.now();
+    firstDate ??= initialDate.subtract(const Duration(days: 365 * 100));
+    lastDate ??= firstDate.add(const Duration(days: 365 * 200));
+
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (selectedDate == null) return null;
+
+    if (!context.mounted) return selectedDate;
+
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedDate),
+    );
+
+    selectedDateTime = selectedTime == null
+        ? selectedDate
+        : DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute,
+          );
+  }
+
+  DateTime selectedDateTime = DateTime.now();
+/*  
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101)
+    );
+    if ( picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+*/
   @override
   void dispose() {
     textNomeController.dispose();
@@ -37,7 +91,7 @@ class _NewEventState extends State<NewEvent> {
                 controller: textNomeController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'inserire il nome dell\'evento',
+                  hintText: 'Inserire il nome dell\'evento',
                 )
               ),
             ),
@@ -47,12 +101,13 @@ class _NewEventState extends State<NewEvent> {
                 controller: textDescrizioneController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'inserire la descrizione dell\'evento',
-                )
+                  hintText: 'Inserire la descrizione dell\'evento',
+                ),
+                maxLines: 8,
               ),
             ),
             ElevatedButton(
-              onPressed: () => _selectDate(context), 
+              onPressed: () => showDateTimePicker(context: context), 
               child: Text('Select event\'s date'),
             )
           ],
@@ -61,27 +116,11 @@ class _NewEventState extends State<NewEvent> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context, Event(title: textNomeController.text, desctiption: textDescrizioneController.text, 
-          completed: false, date: selectedDate, expectedParticipants: 3, actualParticipants: 0));
+          completed: false, date: selectedDateTime, expectedParticipants: 3, actualParticipants: 0));
         },
         child: const Icon(Icons.send_rounded),
       ),
     );
-  }
-
-  DateTime selectedDate = DateTime.now();
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101)
-    );
-    if ( picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
   }
 }
 
