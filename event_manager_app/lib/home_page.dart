@@ -57,17 +57,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.cyan,
+          backgroundColor: Colors.tealAccent[700],
           title: Text('Event Manager'),
         ),
         body: SafeArea(
           child: ListView.builder(
-            itemCount: events.length*2-1,
+            itemCount: events.length,
             itemBuilder: (context, index) {
-              if (index.isOdd) {
-                return const Divider();
-              }
-              final eventsIndex = index ~/2;
+              final eventsIndex = index;
               Event ev = events[eventsIndex];
               return Card(
                 child: Column(
@@ -78,13 +75,12 @@ class _HomePageState extends State<HomePage> {
                     ListTile(
                       title: Text(
                         ev.title,
-                        style: TextStyle(background: Paint()..color = Colors.cyan)
                       ), 
                       subtitle:  Text(ev.desctiption + ev.date.toString()),
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => EventDetailPage(title: ev.title))
+                          MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
                         );
                       },
                     ),
@@ -94,22 +90,22 @@ class _HomePageState extends State<HomePage> {
             }
           )
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewEvent())
-          ).then((newEvent) {
-                print("coco");
-                print(newEvent);
-                if(newEvent != null) {
-                  setState((){
-                    events.add(newEvent);
-                  });
-                }
-            });
-        },
-        
-        child: const Icon(Icons.add),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NewEvent())
+            ).then((newEvent) {
+                  print("coco");
+                  print(newEvent);
+                  if(newEvent != null) {
+                    setState((){
+                      events.add(newEvent);
+                    });
+                  }
+              });
+          },
+          child: const Icon(Icons.add),
         ),
       );
   }

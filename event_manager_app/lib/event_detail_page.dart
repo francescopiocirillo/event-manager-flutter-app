@@ -1,19 +1,20 @@
+import 'package:event_manager_app/home_page.dart';
 import  'package:flutter/material.dart';
 
 class EventDetailPage extends StatelessWidget {
-  final String title; 
-  const EventDetailPage({super.key, required this.title});
+  final Event event; 
+  const EventDetailPage({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.cyan,
+          backgroundColor: Colors.tealAccent[700],
           centerTitle: true,
           title: Text('Event Manager'),
         ),
         body: SafeArea(
-          child: Text(title),
+          child: Text(event.title),
         ),
       );
   }

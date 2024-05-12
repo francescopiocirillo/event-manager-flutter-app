@@ -16,6 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Event Manager',
       home: HomePage(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+          accentColor: Colors.red[300],
+          backgroundColor: Colors.teal[50],
+          cardColor: Colors.tealAccent,
+          errorColor: Colors.red,
+          primarySwatch: Colors.teal)
+      )
     );
   }
 

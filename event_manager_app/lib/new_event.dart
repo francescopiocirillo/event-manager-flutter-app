@@ -24,7 +24,7 @@ class _NewEventState extends State<NewEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.cyan,
+        backgroundColor: Colors.tealAccent[700],
         centerTitle: true,
         title: Text('Event Manager'),
       ),
