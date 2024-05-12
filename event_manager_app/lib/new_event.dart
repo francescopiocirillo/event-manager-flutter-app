@@ -13,7 +13,8 @@ class NewEvent extends StatefulWidget {
 class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
-  String dateTimePrompt = "Select date/time of the event";
+  String datePrompt = "Select dates of the event";
+  String timePrompt = "Select event's start hour";
 /*
   Future<DateTime?> showDateTimePicker({
   required BuildContext context,
@@ -72,18 +73,21 @@ class _NewEventState extends State<NewEvent> {
       setState(() {
         startDate = picked.start;
         endDate = picked.end;
+        datePrompt = "Selected date: " + DateFormat("EEE, MMM d, yyyy").format(startDate)+" / "+
+          DateFormat("EEE, MMM d, yyyy").format(endDate) ;
       });
     }
   }
 
-  Future<TimeOfDay?> selectedTime(BuildContext context) async {
+  Future<void> selectedTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context, 
-      initialTime: TimeOfDay(minute: 00, hour: 00)
+      initialTime: const TimeOfDay(minute: 00, hour: 00)
     );
     if (picked != null) {
       setState(() {
-        startTime = picked;
+        startTime = picked;/*
+        timePrompt = "Selected hour: " + DateFormat('hh:mm').format(startTime);*/
       });
     }
   }
@@ -129,7 +133,7 @@ class _NewEventState extends State<NewEvent> {
             ),
             ElevatedButton(
               onPressed: () => _selectDates(context),
-              child: Text(dateTimePrompt),
+              child: Text(datePrompt),
             ),
             ElevatedButton(
               onPressed: () => selectedTime(context),
