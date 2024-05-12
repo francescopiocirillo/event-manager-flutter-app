@@ -1,5 +1,6 @@
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
+import 'package:flutter/cupertino.dart';
 import  'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -66,8 +67,12 @@ class _HomePageState extends State<HomePage> {
 
   int currentPageIndex = 0;
 
+  final List<bool> isSelected = [true, false];
+  
   @override
   Widget build(BuildContext context) {
+    print("suresure");
+    print(isSelected.length);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.tealAccent[700],
@@ -75,46 +80,70 @@ class _HomePageState extends State<HomePage> {
         ),
         body: <Widget>[
           SafeArea(
-          child: ListView.builder(
-            itemCount: events.length,
-            itemBuilder: (context, index) {
-              final eventsIndex = index;
-              Event ev = events[eventsIndex];
-              return InkWell(
-                child: Card(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: Image.asset(
-                            ev.img,
-                            fit: BoxFit.cover
-                          ),
+          child: Column(
+            children: [
+              ToggleButtons(
+                isSelected: isSelected,
+                onPressed: (index) {
+                  setState(() {
+                    for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+                      if (buttonIndex == index) {
+                        isSelected[buttonIndex] = true;
+                      } else {
+                        isSelected[buttonIndex] = false;
+                      }
+                    }
+                  });
+                },
+                children: <Widget>[
+                  Icon(Icons.ac_unit),
+                  Icon(Icons.call)
+                ],
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    final eventsIndex = index;
+                    Event ev = events[eventsIndex];
+                    return InkWell(
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Image.asset(
+                                  ev.img,
+                                  fit: BoxFit.cover
+                                ),
+                              ),
+                            ),
+                            ListTile(
+                              title: Text(
+                                ev.title,
+                              ),
+                              subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(ev.desctiption),
+                            )
+                          ],
                         ),
                       ),
-                      ListTile(
-                        title: Text(
-                          ev.title,
-                        ),
-                        subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(ev.desctiption),
-                      )
-                    ],
-                  ),
-                ),
-                onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
+                      onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
+                          );
+                        },
                     );
-                  },
-              );
-            }
+                  }
+                ),
+              ),
+            ],
           )
         ),
         Text("Paperino"),
