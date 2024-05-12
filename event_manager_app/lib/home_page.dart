@@ -1,6 +1,7 @@
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
 import  'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Event {
   String title;
@@ -73,26 +74,32 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               final eventsIndex = index;
               Event ev = events[eventsIndex];
-              return Card(
-                child: Column(
-                  children: [
-                    /*Image.file(
-                      ev.img
-                    ),*/
-                    ListTile(
-                      title: Text(
-                        ev.title,
-                      ), 
-                      subtitle:  Text(ev.desctiption + ev.startDate.toString()),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
-                        );
-                      },
-                    ),
-                  ],
+              return InkWell(
+                child: Card(
+                  child: Column(
+                    children: [
+                      /*Image.file(
+                        ev.img
+                      ),*/
+                      ListTile(
+                        title: Text(
+                          ev.title,
+                        ), 
+                        subtitle:  Text("From ${DateFormat('yyyy-MM-dd').format(ev.startDate)} at ${DateFormat('kk:mm').format(ev.startDate)}\nTo ${DateFormat('yyyy-MM-dd').format(ev.endDate)}"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(ev.desctiption),
+                      )
+                    ],
+                  ),
                 ),
+                onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
+                    );
+                  },
               );
             }
           )
