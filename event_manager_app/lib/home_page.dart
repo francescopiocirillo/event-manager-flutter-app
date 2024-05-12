@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                       title: Text(
                         ev.title,
                       ), 
-                      subtitle:  Text(ev.desctiption + ev.date.toString()),
+                      subtitle:  Text(ev.desctiption + ev.startDate.toString()),
                       onTap: () {
                         Navigator.push(
                           context,

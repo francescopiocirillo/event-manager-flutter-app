@@ -141,7 +141,7 @@ class _NewEventState extends State<NewEvent> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context, Event(title: textNomeController.text, desctiption: textDescrizioneController.text, 
-          completed: false, date: startDate, expectedParticipants: 3, actualParticipants: 0));
+          completed: false, startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: 3, actualParticipants: 0));
         },
         child: const Icon(Icons.send_rounded),
       ),
