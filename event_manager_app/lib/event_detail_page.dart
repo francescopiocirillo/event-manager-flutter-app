@@ -9,7 +9,7 @@ class EventDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.tealAccent[700],
+          backgroundColor: Colors.teal,
           centerTitle: true,
           title: Text('Event Manager'),
         ),

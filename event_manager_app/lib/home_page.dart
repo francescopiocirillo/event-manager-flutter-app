@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
     print(isSelected.length);
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.tealAccent[700],
+          backgroundColor:Colors.teal,
           title: Text('Event Manager'),
         ),
         body: <Widget>[
@@ -146,7 +146,75 @@ class _HomePageState extends State<HomePage> {
             ],
           )
         ),
-        Text("Paperino"),
+        SafeArea(
+          child: Column(
+            children: [
+              SearchBar(
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    final eventsIndex = index;
+                    Event ev = events[eventsIndex];
+                    return InkWell(
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 8),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle),
+                                      child: CircleAvatar(backgroundImage: AssetImage(ev.img), radius: 60,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ListTile(
+                                      title: Text(
+                                        ev.title,
+                                      ),
+                                      subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => NewEvent())
+                                ).then((newEvent) {
+                                      if(newEvent != null) {
+                                        setState((){
+                                          events.add(newEvent);
+                                        });
+                                      }
+                                  });
+                              },
+                              child: Text('Modify event information'),
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
+                          );
+                        },
+                    );
+                  }
+                ),
+              ),
+              
+            ],
+          )
+        ),
         Text("Pippo"),
         ][currentPageIndex],
         floatingActionButton: FloatingActionButton(
@@ -166,11 +234,13 @@ class _HomePageState extends State<HomePage> {
           child: const Icon(Icons.add),
         ),
         bottomNavigationBar: NavigationBar(
+          backgroundColor: Colors.teal,
             onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
             });
           },
+          selectedIndex: currentPageIndex,
           destinations: const <Widget>[
           NavigationDestination(
             icon: Icon(Icons.home_rounded),
