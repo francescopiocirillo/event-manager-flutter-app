@@ -6,7 +6,9 @@ class Event {
   String title;
   String desctiption;
   bool completed;
-  DateTime date;
+  DateTime startDate;
+  DateTime endDate;
+  TimeOfDay startHour;
   int expectedParticipants;
   int actualParticipants;
   /*File img;*/
@@ -16,13 +18,14 @@ class Event {
     required this.title,
     required this.desctiption,
     required this.completed,
-    required this.date,
+    required this.startDate,
+    required this.endDate,
+    required this.startHour,
     required this.expectedParticipants,
     required this.actualParticipants,
     /*required this.img,*/
   });
 }
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,7 +40,9 @@ class _HomePageState extends State<HomePage> {
       title: 'Coachella',
       desctiption: 'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
       completed: false,
-      date: DateTime(2024, 5, 7, 15, 30),
+      startDate: DateTime(2024, 5, 7, 15, 30),
+      endDate: DateTime(2024, 6, 7, 15, 30),
+      startHour: TimeOfDay(hour: 12, minute: 00),
       expectedParticipants: 300,
       actualParticipants:  200,
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
@@ -46,7 +51,9 @@ class _HomePageState extends State<HomePage> {
       title: 'Milano Fashon Week',
       desctiption: 'parade',
       completed: false,
-      date: DateTime(2024, 2, 10, 08, 30),
+      startDate: DateTime(2024, 2, 11, 08, 30),
+      endDate: DateTime(2024, 6, 7, 15, 30),
+      startHour: TimeOfDay(hour: 22, minute: 30),
       expectedParticipants: 5000,
       actualParticipants: 4600,
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/

@@ -12,7 +12,7 @@ class NewEvent extends StatefulWidget {
 class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
-
+/*
   Future<DateTime?> showDateTimePicker({
   required BuildContext context,
   DateTime? initialDate,
@@ -49,24 +49,38 @@ class _NewEventState extends State<NewEvent> {
             selectedTime.minute,
           );
   }
+*/
+  DateTimeRange selectedDates= DateTimeRange(start: DateTime.now(), end: DateTime.now());
+  DateTime startDate= DateTime.now();
+  DateTime endDate= DateTime.now();
+  TimeOfDay startTime= TimeOfDay(hour: 12, minute: 00);
 
-  DateTime selectedDateTime = DateTime.now();
-/*  
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101)
+  Future<void> _selectDates(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context, 
+      firstDate: DateTime(2024, 1, 1), 
+      lastDate: DateTime(2030, 12, 31),
     );
-    if ( picked != null && picked != selectedDate) {
+    if (picked != null) {
       setState(() {
-        selectedDate = picked;
+        startDate = picked.start;
+        endDate = picked.end;
       });
     }
   }
-*/
+
+  Future<TimeOfDay?> selectedTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context, 
+      initialTime: TimeOfDay(minute: 00, hour: 00)
+    );
+    if (picked != null) {
+      setState(() {
+        startTime = picked;
+      });
+    }
+  }
+
   @override
   void dispose() {
     textNomeController.dispose();
@@ -107,8 +121,12 @@ class _NewEventState extends State<NewEvent> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => showDateTimePicker(context: context), 
+              onPressed: () => _selectDates(context),
               child: Text('Select event\'s date'),
+            ),
+            ElevatedButton(
+              onPressed: () => selectedTime(context),
+              child: Text('Select event\'s start hour'),
             )
           ],
         ),
@@ -116,7 +134,7 @@ class _NewEventState extends State<NewEvent> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context, Event(title: textNomeController.text, desctiption: textDescrizioneController.text, 
-          completed: false, date: selectedDateTime, expectedParticipants: 3, actualParticipants: 0));
+          completed: false, date: startDate, expectedParticipants: 3, actualParticipants: 0));
         },
         child: const Icon(Icons.send_rounded),
       ),
