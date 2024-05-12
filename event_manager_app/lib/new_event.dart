@@ -14,7 +14,7 @@ class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
   String datePrompt = "Select dates of the event";
-  String timePrompt = "Select event's start hour";
+  String timePrompt = "Select event's start hour lollo";
   int _selectedImage = 0;
 /*
   Future<DateTime?> showDateTimePicker({
@@ -87,8 +87,9 @@ class _NewEventState extends State<NewEvent> {
     );
     if (picked != null) {
       setState(() {
-        startTime = picked;/*
-        timePrompt = "Selected hour: " + DateFormat('hh:mm').format(startTime);*/
+        startTime = picked;
+        timePrompt = "Selected hour: " + 
+          DateFormat('h:mm a').format(DateTime(1,1,1,startTime.hour,startTime.minute));
       });
     }
   }
@@ -187,7 +188,7 @@ class _NewEventState extends State<NewEvent> {
             ),
             ElevatedButton(
               onPressed: () => selectedTime(context),
-              child: Text('Select event\'s start hour'),
+              child: Text(timePrompt),
             )
           ],
         ),
