@@ -15,6 +15,7 @@ class _NewEventState extends State<NewEvent> {
   final textDescrizioneController = TextEditingController();
   String datePrompt = "Select dates of the event";
   String timePrompt = "Select event's start hour";
+  int _selectedImage = 0;
 /*
   Future<DateTime?> showDateTimePicker({
   required BuildContext context,
@@ -102,6 +103,7 @@ class _NewEventState extends State<NewEvent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.tealAccent[700],
         centerTitle: true,
@@ -110,6 +112,54 @@ class _NewEventState extends State<NewEvent> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Choose your event's theme!"),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedImage = 0;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
+                      child: CircleAvatar(backgroundImage: AssetImage("assets/coachella.jpg"), radius: 60,),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedImage = 1;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
+                      child: CircleAvatar(backgroundImage: AssetImage("assets/coachella.jpg"), radius: 60,),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedImage = 2;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.green:Colors.transparent), shape: BoxShape.circle),
+                      child: CircleAvatar(backgroundImage: AssetImage("assets/coachella.jpg"), radius: 60,),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
