@@ -2,6 +2,7 @@ import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
 import 'package:flutter/cupertino.dart';
 import  'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -85,6 +86,67 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  late TextEditingController controller1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller1=TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    controller1.dispose();
+    super.dispose();
+  }
+
+  Future<String?> openDialog() => showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Add new participant'),
+      content: Column(
+        children: [
+          TextField(
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText:'Name'
+              ),
+              controller: controller1,
+              onSubmitted: (_) =>submit(),
+          ),
+          TextField(
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText:'Cognome'
+              ),
+              controller: controller1,
+              onSubmitted: (_) =>submit(),
+          ),
+          TextField(
+              keyboardType: TextInputType.number,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText:'Age'
+              ),
+              controller: controller1,
+              onSubmitted: (_) =>submit(),
+          ),
+      ],) ,
+      
+      actions: [
+        TextButton(
+          onPressed: submit,
+          child: Text('ADD'),
+        )
+      ],)
+  );
+
+  void submit(){
+    Navigator.of(context).pop(controller1.text);
+    controller1.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     print("suresure");
@@ -152,7 +214,15 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(ev.desctiption),
-                              )
+                              ),
+                              ElevatedButton(
+                                child: Text('new participant'),
+                                onPressed: () async {
+                                    final name = await openDialog();
+                                    if(name == null || name.isEmpty) return;
+                                    setState(() => ev.actualParticipants++);
+                                }, 
+                              ),
                             ],
                           ),
                         ),
@@ -173,6 +243,7 @@ class _HomePageState extends State<HomePage> {
             ],
           )
         ),
+        //menagment page
         SafeArea(
           child: Column(
             children: [
@@ -246,7 +317,8 @@ class _HomePageState extends State<HomePage> {
                                 setState(() =>
                                   _isOpen[index] = !_isOpen[index]
                                 )
-                            )
+                            ),
+                            
                           ],
                         ),
                       ),
