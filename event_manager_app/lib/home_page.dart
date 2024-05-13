@@ -41,7 +41,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-
   List<Event> events = [
     Event(
       title: 'Coachella',
@@ -73,8 +72,12 @@ class _HomePageState extends State<HomePage> {
 
   final List<bool> isSelected = [true, false];
   
-  final List<bool> _isOpen = [false, false];
+  List<bool> _isOpen = [];
 
+  _HomePageState() {
+    _isOpen = List.generate(events.length, (index) => false);
+  }
+  
   List<Event> filteredEvents = [];
 
   void filterEvents(String query) {
@@ -221,6 +224,7 @@ class _HomePageState extends State<HomePage> {
                                       if(newEvent != null) {
                                         setState((){
                                           events.add(newEvent);
+                                          _isOpen.add(false);
                                         });
                                       }
                                   });
@@ -276,6 +280,7 @@ class _HomePageState extends State<HomePage> {
                   if(newEvent != null) {
                     setState((){
                       events.add(newEvent);
+                      _isOpen.add(false);
                     });
                   }
               });
