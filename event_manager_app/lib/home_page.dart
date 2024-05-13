@@ -229,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             ExpansionPanelList(
                               animationDuration:
-                                Duration(seconds: 2),
+                                Duration(milliseconds: 500),
                               expandedHeaderPadding:
                                 EdgeInsets.all(8),
                               children: [
@@ -244,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                               expansionCallback: (i, isOpen) =>
                                 setState(() =>
-                                  _isOpen[i] = !_isOpen[i]
+                                  _isOpen[index] = !_isOpen[index]
                                 )
                             )
                           ],
