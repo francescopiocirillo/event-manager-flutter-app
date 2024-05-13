@@ -75,6 +75,16 @@ class _HomePageState extends State<HomePage> {
   
   final List<bool> _isOpen = [false, false];
 
+  List<Event> filteredEvents = [];
+
+  void filterEvents(String query) {
+    setState(() {
+      filteredEvents = events
+          .where((ev) => ev.title.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print("suresure");
@@ -167,13 +177,15 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               SearchBar(
+                onChanged: filterEvents,
+                hintText: "Search by title",
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: events.length,
+                  itemCount: filteredEvents.length,
                   itemBuilder: (context, index) {
                     final eventsIndex = index;
-                    Event ev = events[eventsIndex];
+                    Event ev = filteredEvents[eventsIndex];
                     return InkWell(
                       child: Card(
                         child: Column(
