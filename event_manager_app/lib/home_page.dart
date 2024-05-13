@@ -32,12 +32,16 @@ class Event {
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
+  
   @override
   State<HomePage> createState() => _HomePageState();
+  
 }
 
+
 class _HomePageState extends State<HomePage> {
+
+
   List<Event> events = [
     Event(
       title: 'Coachella',
@@ -69,6 +73,8 @@ class _HomePageState extends State<HomePage> {
 
   final List<bool> isSelected = [true, false];
   
+  final List<bool> _isOpen = [false, false];
+
   @override
   Widget build(BuildContext context) {
     print("suresure");
@@ -208,6 +214,26 @@ class _HomePageState extends State<HomePage> {
                                   });
                               },
                               child: Text('Modify event information'),
+                            ),
+                            ExpansionPanelList(
+                              animationDuration:
+                                Duration(seconds: 2),
+                              expandedHeaderPadding:
+                                EdgeInsets.all(8),
+                              children: [
+                                ExpansionPanel(
+                                  headerBuilder: (context, isExpanded) {
+                                    return Text("Hello");
+                                  }, 
+                                  canTapOnHeader: true,
+                                  body: Text("Now Open!"),
+                                  isExpanded: _isOpen[index],
+                                ),
+                              ],
+                              expansionCallback: (i, isOpen) =>
+                                setState(() =>
+                                  _isOpen[i] = !_isOpen[i]
+                                )
                             )
                           ],
                         ),
