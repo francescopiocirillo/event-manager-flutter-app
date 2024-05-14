@@ -9,19 +9,18 @@ import 'package:intl/intl.dart';
 class Person {
   String name;
   String lastName;
-  int age;
+  DateTime birth;
 
   Person({
     required this.name,
     required this.lastName,
-    required this.age
+    required this.birth
   });
 }
 
 class Event {
   String title;
   String desctiption;
-  bool completed;
   DateTime startDate;
   DateTime endDate;
   TimeOfDay startHour;
@@ -33,7 +32,6 @@ class Event {
   Event({
     required this.title,
     required this.desctiption,
-    required this.completed,
     required this.startDate,
     required this.endDate,
     required this.startHour,
@@ -58,7 +56,6 @@ class _HomePageState extends State<HomePage> {
     Event(
       title: 'Coachella',
       desctiption: 'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
-      completed: false,
       startDate: DateTime(2024, 5, 7, 15, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 12, minute: 00),
@@ -70,7 +67,6 @@ class _HomePageState extends State<HomePage> {
     Event(
       title: 'Milano Fashon Week',
       desctiption: 'parade',
-      completed: false,
       startDate: DateTime(2024, 2, 11, 08, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 22, minute: 30),
@@ -104,59 +100,96 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController controller1 = TextEditingController();
   final TextEditingController controller2 = TextEditingController();
-  final TextEditingController controller3 = TextEditingController();
 
   @override
   void dispose() {
     controller1.dispose();
     controller2.dispose();
-    controller3.dispose();
     super.dispose();
+  }
+
+  DateTime birthDate = DateTime.now();
+  String datePrompt = "Select date of birth*";
+  String invalidPartecipant = "";
+
+  Future<void> _selectDates(BuildContext context, setState) async {
+    final DateTime? picked = await showDatePicker(
+      context: context, 
+      firstDate: DateTime(1900, 1, 1), 
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        birthDate = picked;
+        datePrompt = "Selected:" + DateFormat("yMd").format(birthDate);
+      });
+    }
   }
 
   Future<Person?> openDialog() => showDialog<Person>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text('Add new participant'),
-      content: Column(
-        children: [
-          TextField(
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText:'Name*'
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Add new participant'),
+            content: Column(
+              children: [
+                TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      labelText: 'Name*',
+                      suffixText: 'required',
+                    ),
+                    controller: controller1,
+                ),
+                TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      labelText: 'Surname*',
+                      suffixText: 'required'
+                    ),
+                    controller: controller2,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(datePrompt),
+                      ElevatedButton(
+                        onPressed: () => _selectDates(context, setState),
+                        child: Icon(Icons.date_range_outlined),
+                      ),
+                  ],),  
+                ),
+                Text(invalidPartecipant, style: TextStyle(color: Colors.red[300]),),
+            ],),
+            actions: [
+              TextButton(
+                onPressed: () => submitAddPerson(setState),
+                child: Text('ADD'),
               ),
-              controller: controller1,
-          ),
-          TextField(
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText:'Cognome*'
-              ),
-              controller: controller2,
-          ),
-          TextField(
-              keyboardType: TextInputType.number,
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText:'Age*'
-              ),
-              controller: controller3,
-          ),
-      ],) ,
-      
-      actions: [
-        TextButton(
-          onPressed: submitAddPerson,
-          child: Text('ADD'),
-        )
-      ],)
+            ],
+            
+          );
+        }
+      );
+    }
   );
 
-  void submitAddPerson() {
-    Navigator.of(context).pop(Person(name: controller1.text, lastName: controller2.text, age: int.parse(controller3.text)));
-    controller1.clear();
-    controller2.clear();
-    controller3.clear();
+  void submitAddPerson(setState) {
+    if(controller1.text == "" || controller2.text == "" || birthDate == DateTime.now()){
+      setState(() {
+        invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
+      });
+    }else{
+      Navigator.of(context).pop(Person(name: controller1.text, lastName: controller2.text, birth: birthDate));
+      controller1.clear();
+      controller2.clear();
+      datePrompt = "Select date of birth";
+      invalidPartecipant = "";
+    }
   }
 
   @override
@@ -230,6 +263,10 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 child: Text('new participant'),
                                 onPressed: () async {
+                                    controller1.clear();
+                                    controller2.clear();
+                                    datePrompt = "Select date of birth";
+                                    invalidPartecipant = "";
                                     final person = await openDialog();
                                     if(person == null) return;
                                     setState(() {
@@ -312,7 +349,10 @@ class _HomePageState extends State<HomePage> {
                                       }
                                   });
                               },
-                              child: Text('Modify event information'),
+                              child: Text('Modify event information',
+                                        style: TextStyle(color: Colors.red[300])
+                                     ),
+                              
                             ),
                             ExpansionPanelList(
                               animationDuration:
@@ -332,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                                           padding: const EdgeInsets.only(left: 5.0),
                                           child: SingleChildScrollView(child: Padding(
                                             padding: const EdgeInsets.all(2.0),
-                                            child: Text(ev.participants[index].name),
+                                            child: Text(ev.participants[index].name + " " + ev.participants[index].lastName + " " + "${DateFormat('yMd').format(ev.participants[index].birth)}"),
                                           )),
                                         );
                                       },),
