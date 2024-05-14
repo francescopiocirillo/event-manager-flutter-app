@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
       }
       if(!isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
         filteredEvents = events
-          .where((element) => element.img == 'assets/lavoro.jpg')
+          .where((element) => element.img == 'assets/romantico.jpg')
           .toList();
       }
       if(!isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
