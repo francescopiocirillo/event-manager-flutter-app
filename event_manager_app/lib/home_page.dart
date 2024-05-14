@@ -96,50 +96,54 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void applyFilters() {
+  void applyFilters(close) {
+    filterEvents(searchBarController.text);
     setState(() {
       if(!isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
         filteredEvents = [];
       }
       if(!isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
-        filteredEvents = events
+        filteredEvents = filteredEvents
           .where((element) => element.img == 'assets/romantico.jpg')
           .toList();
       }
       if(!isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
-        filteredEvents = events
+        filteredEvents = filteredEvents
           .where((element) => element.img == 'assets/cena.png')
           .toList();
       }
       if(!isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
-        filteredEvents = events
+        filteredEvents = filteredEvents
           .where((element) => element.img == 'assets/cena.png' || element.img == 'assets/romantico.jpg')
           .toList();
       }
       if(isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
-        filteredEvents = events
+        filteredEvents = filteredEvents
           .where((element) => element.img == 'assets/lavoro.jpg')
           .toList();
       }
       if(isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
-        filteredEvents = events
+        filteredEvents = filteredEvents
           .where((element) => element.img == 'assets/lavoro.jpg' || element.img == 'assets/romantico.jpg')
           .toList();
       }
       if(isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
-        filteredEvents = events
+        filteredEvents = filteredEvents
           .where((element) => element.img == 'assets/cena.png' || element.img == 'assets/lavoro.jpg')
           .toList();
       }
       if(isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
-        filteredEvents = events;
+        filteredEvents = filteredEvents;
       }
     });
-    Navigator.of(context).pop();
+    if(close) {
+      Navigator.of(context).pop();
+    }
   }
 
   final TextEditingController controller1 = TextEditingController();
   final TextEditingController controller2 = TextEditingController();
+  final TextEditingController searchBarController = TextEditingController();
 
   @override
   void dispose() {
@@ -244,7 +248,9 @@ class _HomePageState extends State<HomePage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: applyFilters,
+                  onPressed: () {
+                    applyFilters(true);
+                  },
                   child: Text('FILTER'),
                 )
               ],
@@ -385,8 +391,11 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: SearchBar(
-                      onChanged: filterEvents,
+                      onChanged: (value) {
+                        applyFilters(false);
+                      },
                       hintText: "Search by title",
+                      controller: searchBarController,
                     ),
                   ),
                   Padding(
