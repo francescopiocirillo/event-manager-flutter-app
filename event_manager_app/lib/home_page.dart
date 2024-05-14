@@ -6,6 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
+class Person {
+  String name;
+  String lastName;
+  int age;
+
+  Person({
+    required this.name,
+    required this.lastName,
+    required this.age
+  });
+}
+
 class Event {
   String title;
   String desctiption;
@@ -16,7 +28,7 @@ class Event {
   int expectedParticipants;
   int actualParticipants;
   String img;
-  
+  List<Person> participants = [];
 
   Event({
     required this.title,
@@ -27,7 +39,7 @@ class Event {
     required this.startHour,
     required this.expectedParticipants,
     required this.actualParticipants,
-    required this.img,
+    required this.img
   });
 }
 
@@ -77,6 +89,7 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState() {
     _isOpen = List.generate(events.length, (index) => false);
+    filteredEvents = events;
   }
   
   List<Event> filteredEvents = [];
@@ -89,22 +102,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  late TextEditingController controller1;
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller1=TextEditingController();
-  }
+  final TextEditingController controller1 = TextEditingController();
+  final TextEditingController controller2 = TextEditingController();
+  final TextEditingController controller3 = TextEditingController();
 
   @override
   void dispose() {
     controller1.dispose();
+    controller2.dispose();
+    controller3.dispose();
     super.dispose();
   }
 
-  Future<String?> openDialog() => showDialog<String>(
+  Future<Person?> openDialog() => showDialog<Person>(
     context: context,
     builder: (context) => AlertDialog(
       title: Text('Add new participant'),
@@ -113,41 +123,40 @@ class _HomePageState extends State<HomePage> {
           TextField(
               autofocus: true,
               decoration: InputDecoration(
-                hintText:'Name'
+                hintText:'Name*'
               ),
               controller: controller1,
-              onSubmitted: (_) =>submit(),
           ),
           TextField(
               autofocus: true,
               decoration: InputDecoration(
-                hintText:'Cognome'
+                hintText:'Cognome*'
               ),
-              controller: controller1,
-              onSubmitted: (_) =>submit(),
+              controller: controller2,
           ),
           TextField(
               keyboardType: TextInputType.number,
               autofocus: true,
               decoration: InputDecoration(
-                hintText:'Age'
+                hintText:'Age*'
               ),
-              controller: controller1,
-              onSubmitted: (_) =>submit(),
+              controller: controller3,
           ),
       ],) ,
       
       actions: [
         TextButton(
-          onPressed: submit,
+          onPressed: submitAddPerson,
           child: Text('ADD'),
         )
       ],)
   );
 
-  void submit(){
-    Navigator.of(context).pop(controller1.text);
+  void submitAddPerson() {
+    Navigator.of(context).pop(Person(name: controller1.text, lastName: controller2.text, age: int.parse(controller3.text)));
     controller1.clear();
+    controller2.clear();
+    controller3.clear();
   }
 
   @override
@@ -221,9 +230,12 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 child: Text('new participant'),
                                 onPressed: () async {
-                                    final name = await openDialog();
-                                    if(name == null || name.isEmpty) return;
-                                    setState(() => ev.actualParticipants++);
+                                    final person = await openDialog();
+                                    if(person == null) return;
+                                    setState(() {
+                                      ev.actualParticipants++;
+                                      ev.participants.add(person);
+                                    },);
                                 }, 
                               ),
                             ],
@@ -280,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                       title: Text(
                                         ev.title,
                                       ),
-                                      subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
+                                      subtitle: Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
                                     ),
                                   ),
                                 ],
@@ -304,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             ExpansionPanelList(
                               animationDuration:
-                                Duration(milliseconds: 500),
+                                Duration(milliseconds: 1000),
                               expandedHeaderPadding:
                                 EdgeInsets.all(8),
                               children: [
@@ -313,7 +325,18 @@ class _HomePageState extends State<HomePage> {
                                     return Text("Hello");
                                   }, 
                                   canTapOnHeader: true,
-                                  body: Text("Now Open!"),
+                                  body: SizedBox(
+                                      height: 100,
+                                      child: ListView.builder(itemCount: ev.participants.length, itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(left: 5.0),
+                                          child: SingleChildScrollView(child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(ev.participants[index].name),
+                                          )),
+                                        );
+                                      },),
+                                    ),
                                   isExpanded: _isOpen[index],
                                 ),
                               ],
@@ -322,7 +345,6 @@ class _HomePageState extends State<HomePage> {
                                   _isOpen[index] = !_isOpen[index]
                                 )
                             ),
-                            
                           ],
                         ),
                       ),
