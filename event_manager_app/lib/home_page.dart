@@ -1,7 +1,7 @@
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
 import 'package:flutter/cupertino.dart';
-import  'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -30,38 +30,35 @@ class Event {
   String img;
   List<Person> participants = [];
 
-  Event({
-    required this.title,
-    required this.desctiption,
-    required this.startDate,
-    required this.endDate,
-    required this.startHour,
-    required this.expectedParticipants,
-    required this.actualParticipants,
-    required this.img
-  });
+  Event(
+      {required this.title,
+      required this.desctiption,
+      required this.startDate,
+      required this.endDate,
+      required this.startHour,
+      required this.expectedParticipants,
+      required this.actualParticipants,
+      required this.img});
 }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-  
+
   @override
   State<HomePage> createState() => _HomePageState();
-  
 }
 
-
 class _HomePageState extends State<HomePage> {
-
   List<Event> events = [
     Event(
       title: 'Coachella',
-      desctiption: 'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
+      desctiption:
+          'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
       startDate: DateTime(2024, 5, 7, 15, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 12, minute: 00),
       expectedParticipants: 300,
-      actualParticipants:  200,
+      actualParticipants: 200,
       img: 'assets/romantico.jpg',
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
     ),
@@ -80,17 +77,18 @@ class _HomePageState extends State<HomePage> {
 
   int currentPageIndex = 0;
 
-  final List<bool> isSelected = [true, false];
-  
+  final List<bool> isSelectedTogglePastIncomingEvents = [true, false];
+  final List<bool> isSelectedThemeFilter = [true, true, true];
+
   List<bool> _isOpen = [];
 
   _HomePageState() {
     _isOpen = List.generate(events.length, (index) => false);
     filteredEvents = events;
   }
-  
-  List<Event> filteredEvents = [];
 
+  List<Event> filteredEvents = [];
+ 
   void filterEvents(String query) {
     setState(() {
       filteredEvents = events
@@ -99,12 +97,58 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void applyFilters(close) {
+    filterEvents(searchBarController.text);
+    setState(() {
+      if(!isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
+        filteredEvents = [];
+      }
+      if(!isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents
+          .where((element) => element.img == 'assets/romantico.jpg')
+          .toList();
+      }
+      if(!isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents
+          .where((element) => element.img == 'assets/cena.png')
+          .toList();
+      }
+      if(!isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents
+          .where((element) => element.img == 'assets/cena.png' || element.img == 'assets/romantico.jpg')
+          .toList();
+      }
+      if(isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents
+          .where((element) => element.img == 'assets/lavoro.jpg')
+          .toList();
+      }
+      if(isSelectedThemeFilter[0] && !isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents
+          .where((element) => element.img == 'assets/lavoro.jpg' || element.img == 'assets/romantico.jpg')
+          .toList();
+      }
+      if(isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && !isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents
+          .where((element) => element.img == 'assets/cena.png' || element.img == 'assets/lavoro.jpg')
+          .toList();
+      }
+      if(isSelectedThemeFilter[0] && isSelectedThemeFilter[1] && isSelectedThemeFilter[2]) {
+        filteredEvents = filteredEvents;
+      }
+    });
+    if(close) {
+      Navigator.of(context).pop();
+    }
+  }
+
   final TextEditingController controller1 = TextEditingController();
   final TextEditingController controller2 = TextEditingController();
   Map<String, double> dataActivePart = { /*dat per il diagramma a torta delle statistiche */
     "active": 5,
     "expected": 3,
   };
+  final TextEditingController searchBarController = TextEditingController();
 
   @override
   void dispose() {
@@ -131,7 +175,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<Person?> openDialog() => showDialog<Person>(
+  Future<Person?> openAddParticipantDialog() => showDialog<Person>(
     context: context,
     builder: (context) {
       return StatefulBuilder(
@@ -182,14 +226,52 @@ class _HomePageState extends State<HomePage> {
       );
     }
   );
-
+  Future<Person?> openApplyFiltersDialog() => showDialog<Person>(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Decide which filters to apply'),
+              content: Column(
+                children: [
+                  Text("Filter by theme:"),
+                  ToggleButtons(
+                    fillColor: Colors.teal,
+                    isSelected: isSelectedThemeFilter,
+                    onPressed: (int index) {
+                      setState(() {
+                        isSelectedThemeFilter[index] = !isSelectedThemeFilter[index];
+                      });
+                    },
+                    children: const <Widget>[
+                      CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 40),
+                      CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 40),
+                      CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 40),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    applyFilters(true);
+                  },
+                  child: Text('FILTER'),
+                )
+              ],
+            );
+          },
+        ));
   void submitAddPerson(setState) {
     if(controller1.text == "" || controller2.text == "" || birthDate == DateTime.now()){
       setState(() {
         invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
       });
     }else{
-      Navigator.of(context).pop(Person(name: controller1.text, lastName: controller2.text, birth: birthDate));
+      Navigator.of(context).pop(Person(
+        name: controller1.text,
+        lastName: controller2.text,
+        birth: birthDate));
       controller1.clear();
       controller2.clear();
       datePrompt = "Select date of birth";
@@ -200,25 +282,27 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     print("suresure");
-    print(isSelected.length);
+    print(isSelectedTogglePastIncomingEvents.length);
     return Scaffold(
         appBar: AppBar(
-          backgroundColor:Colors.teal,
+          backgroundColor: Colors.teal,
           title: Text('Event Manager'),
         ),
         body: <Widget>[
           SafeArea(
-          child: Column(
+              child: Column(
             children: [
               ToggleButtons(
-                isSelected: isSelected,
+                isSelected: isSelectedTogglePastIncomingEvents,
                 onPressed: (index) {
                   setState(() {
-                    for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+                    for (int buttonIndex = 0;
+                        buttonIndex < isSelectedTogglePastIncomingEvents.length;
+                        buttonIndex++) {
                       if (buttonIndex == index) {
-                        isSelected[buttonIndex] = true;
+                        isSelectedTogglePastIncomingEvents[buttonIndex] = true;
                       } else {
-                        isSelected[buttonIndex] = false;
+                        isSelectedTogglePastIncomingEvents[buttonIndex] = false;
                       }
                     }
                   });
@@ -236,32 +320,33 @@ class _HomePageState extends State<HomePage> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    final eventsIndex = index;
-                    Event ev = events[eventsIndex];
-                    if(isSelected[0] && ev.endDate.compareTo(DateTime.now()) < 0 || isSelected[1] && ev.endDate.compareTo(DateTime.now()) >= 0) {
-                      return InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      final eventsIndex = index;
+                      Event ev = events[eventsIndex];
+                      if (isSelectedTogglePastIncomingEvents[0] &&
+                              ev.endDate.compareTo(DateTime.now()) < 0 ||
+                          isSelectedTogglePastIncomingEvents[1] &&
+                              ev.endDate.compareTo(DateTime.now()) >= 0) {
+                        return InkWell(
                           child: Card(
                             child: Column(
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(top: 10),
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width * 0.8,
-                                    child: Image.asset(
-                                      ev.img,
-                                      fit: BoxFit.cover
-                                    ),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    child:
+                                        Image.asset(ev.img, fit: BoxFit.cover),
                                   ),
                                 ),
                                 ListTile(
                                   title: Text(
                                     ev.title,
                                   ),
-                                  subtitle:  Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}\nParticipants ${ev.actualParticipants} of ${ev.expectedParticipants}"),
+                                  subtitle: Text(
+                                      "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}\nParticipants ${ev.actualParticipants} of ${ev.expectedParticipants}"),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
@@ -270,91 +355,112 @@ class _HomePageState extends State<HomePage> {
                                 ElevatedButton(
                                   child: Text('new participant'),
                                   onPressed: () async {
-                                      controller1.clear();
-                                      controller2.clear();
-                                      datePrompt = "Select date of birth";
-                                      invalidPartecipant = "";
-                                      final person = await openDialog();
-                                      if(person == null) return;
-                                      setState(() {
+                                    controller1.clear();
+                                    controller2.clear();
+                                    datePrompt = "Select date of birth";
+                                    invalidPartecipant = "";
+                                    final person =
+                                        await openAddParticipantDialog();
+                                    if (person == null) return;
+                                    setState(
+                                      () {
                                         ev.actualParticipants++;
                                         ev.participants.add(person);
-                                      },);
-                                  }, 
+                                      },
+                                    );
+                                  },
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        onTap: () {
+                          onTap: () {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
-                            );
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EventDetailPage(event: ev)));
                           },
-                      );
-                    }
-                    else {
-                      return SizedBox.shrink();
-                    }
-                  }
-                ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    }),
               ),
             ],
-          )
-        ),
-        //menagment page
-        SafeArea(
-          child: Column(
+          )),
+          //menagment page
+          SafeArea(
+              child: Column(
             children: [
-              SearchBar(
-                onChanged: filterEvents,
-                hintText: "Search by title",
+              Row(
+                children: [
+                  Expanded(
+                    child: SearchBar(
+                      onChanged: (value) {
+                        applyFilters(false);
+                      },
+                      hintText: "Search by title",
+                      controller: searchBarController,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          openApplyFiltersDialog();
+                        },
+                        child: Text("Filters")),
+                  )
+                ],
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: filteredEvents.length,
-                  itemBuilder: (context, index) {
-                    final eventsIndex = index;
-                    Event ev = filteredEvents[eventsIndex];
-                    return InkWell(
-                      child: Card(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 8),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle),
-                                      child: CircleAvatar(backgroundImage: AssetImage(ev.img), radius: 60,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ListTile(
-                                      title: Text(
-                                        ev.title,
+                    itemCount: filteredEvents.length,
+                    itemBuilder: (context, index) {
+                      final eventsIndex = index;
+                      Event ev = filteredEvents[eventsIndex];
+                      return InkWell(
+                        child: Card(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 8),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration:
+                                          BoxDecoration(shape: BoxShape.circle),
+                                      child: CircleAvatar(
+                                        backgroundImage: AssetImage(ev.img),
+                                        radius: 60,
                                       ),
-                                      subtitle: Text("From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
                                     ),
-                                  ),
-                                ],
+                                    Expanded(
+                                      child: ListTile(
+                                        title: Text(
+                                          ev.title,
+                                        ),
+                                        subtitle: Text(
+                                            "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => NewEvent())
-                                ).then((newEvent) {
-                                      if(newEvent != null) {
-                                        setState((){
-                                          events.add(newEvent);
-                                          _isOpen.add(false);
-                                        });
-                                      }
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => NewEvent()))
+                                      .then((newEvent) {
+                                    if (newEvent != null) {
+                                      setState(() {
+                                        events.add(newEvent);
+                                        _isOpen.add(false);
+                                      });
+                                    }
                                   });
                               },
                               child: Text('Modify event information',
@@ -400,19 +506,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onTap: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EventDetailPage(event: ev))
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      EventDetailPage(event: ev)));
                         },
-                    );
-                  }
-                ),
+                      );
+                    }),
               ),
-              
             ],
-          )
-        ),
-        SafeArea(
+          )),
+          SafeArea(
           child: Column(
             children: [
               Padding(
@@ -471,43 +575,42 @@ class _HomePageState extends State<HomePage> {
         ][currentPageIndex],
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NewEvent())
-            ).then((newEvent) {
-                  print(newEvent);
-                  if(newEvent != null) {
-                    setState((){
-                      events.add(newEvent);
-                      _isOpen.add(false);
-                    });
-                  }
-              });
+            Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NewEvent()))
+                .then((newEvent) {
+              print(newEvent);
+              if (newEvent != null) {
+                setState(() {
+                  events.add(newEvent);
+                  _isOpen.add(false);
+                });
+              }
+            });
           },
           child: const Icon(Icons.add),
         ),
         bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.teal,
-            onDestinationSelected: (int index) {
+          onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
             });
           },
           selectedIndex: currentPageIndex,
           destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.home_rounded),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.manage_accounts_rounded),
-            label: 'Manage',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.ssid_chart_rounded),
-            label: 'Statistics',
-          ),
-        ],)
-      );
+            NavigationDestination(
+              icon: Icon(Icons.home_rounded),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.manage_accounts_rounded),
+              label: 'Manage',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.ssid_chart_rounded),
+              label: 'Statistics',
+            ),
+          ],
+        ));
   }
 }
