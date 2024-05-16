@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';/*
 import 'package:pie_chart/pie_chart.dart';*/
 import 'package:fl_chart/fl_chart.dart';
-
 class Person {
   String name;
   String lastName;
@@ -97,15 +96,17 @@ class _HomePageState extends State<HomePage> {
           .toList();
     });
   }
-  /*
+  
   List<int> numeroPartecipantiAttivi() {
-    List<int> numeri;
-    for(int i=0; i++; i<events.length){
-
+    List<int> numeri= [0,0];
+    int i;
+    for(i=0; i<events.length; i++){
+      numeri[0] += events[i].actualParticipants;
+      numeri[1] += (events[i].expectedParticipants - events[i].actualParticipants);
     }
     return numeri;
   }
-*/
+
   LineChartBarData get lineChartBarData2_1 => LineChartBarData(
         isCurved: true,
         color: Colors.tealAccent.withOpacity(0.7),
@@ -126,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
   LineChartBarData get lineChartBarData1_3 => LineChartBarData(
         isCurved: true,
-        color: Colors.tealAccent[700],
+        color: Colors.tealAccent[600],
         barWidth: 5,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: true, color: Colors.red.shade300.withOpacity(0.7)),
@@ -598,20 +599,44 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,),
                     /*PieChart(dataMap: dataActivePart),*/
-                    SizedBox(
-                      width: 200,
-                      height: 200,
-                      child: PieChart(
-                        PieChartData(
-                        centerSpaceRadius: 45.0,
-                        sectionsSpace: 3.0,
-                          sections: [
-                            PieChartSectionData(value: 40, color: Colors.tealAccent[900], title: 'active'/*, badgeWidget: */),
-                            PieChartSectionData(value: 30, color: Colors.tealAccent, title: 'absent'),],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: PieChart(
+                            swapAnimationDuration: Duration(milliseconds: 150), // Optional
+                            swapAnimationCurve: Curves.decelerate,
+                            PieChartData(
+                              centerSpaceRadius: 45.0,
+                              sectionsSpace: 3.0,
+                              sections: [
+                                PieChartSectionData(value: numeroPartecipantiAttivi()[0].toDouble(), title: '${(numeroPartecipantiAttivi()[0] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%', color: Colors.tealAccent[900], /*, badgeWidget: */),
+                                PieChartSectionData(value: numeroPartecipantiAttivi()[1].toDouble(), color: Colors.tealAccent, title: '${(numeroPartecipantiAttivi()[1] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%'),],
+                            ),
+                            
+                          ),
                         ),
-                        swapAnimationDuration: Duration(milliseconds: 900), // Optional
-                        swapAnimationCurve: Curves.linear,
-                      ),
+                        Column(
+                          children: [
+                            Icon(Icons.person_2_rounded, color: Colors.tealAccent ),
+                            Text('absent',
+                             style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.tealAccent,
+                                decorationThickness: 3)
+                              ),
+                            Icon(Icons.person_2_rounded, color: Colors.tealAccent.shade700 ),
+                            Text('active', 
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.tealAccent.shade700,
+                                decorationThickness: 3)
+                              ),
+                          ],
+                        )
+                      ],
                     ),     
                     Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
@@ -620,15 +645,38 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,),
-                    SizedBox(
-                      width: 300,
-                      height: 300,
-                      child: LineChart(
-                                LineChartData(
-                                  borderData: FlBorderData(show: false), 
-                                  lineBarsData: linesBarsData,
-                                ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 300,
+                          height: 300,
+                          child: LineChart(
+                                    LineChartData(
+                                      borderData: FlBorderData(show: false), 
+                                      lineBarsData: linesBarsData,
+                                    ),
+                                  ),
+                        ),
+                        Column(
+                          children: [
+                            Icon(Icons.person_2_rounded, color: Colors.tealAccent ),
+                            Text('expected',
+                             style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.tealAccent,
+                                decorationThickness: 3)
                               ),
+                            Icon(Icons.person_2_rounded, color: Colors.tealAccent.shade700 ),
+                            Text('real',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.tealAccent.shade700,
+                                decorationThickness: 3)
+                              ),
+                          ],
+                        )
+                      ],
                     )],
                   
                   ),
