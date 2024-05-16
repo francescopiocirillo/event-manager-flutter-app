@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-
+import 'package:pie_chart/pie_chart.dart';/*
+import 'package:fl_chart/fl_chart.dart';*/
 class Person {
   String name;
   String lastName;
@@ -143,6 +144,10 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController controller1 = TextEditingController();
   final TextEditingController controller2 = TextEditingController();
+  Map<String, double> dataActivePart = { /*dat per il diagramma a torta delle statistiche */
+    "active": 5,
+    "expected": 3,
+  };
   final TextEditingController searchBarController = TextEditingController();
 
   @override
@@ -459,7 +464,9 @@ class _HomePageState extends State<HomePage> {
                                   });
                               },
                               child: Text('Modify event information',
-                                        style: TextStyle(color: Colors.red[300])
+                                        style: TextStyle(color: Colors.red[300],
+                                                        decoration: TextDecoration.underline,
+                                                        decorationColor: Colors.red)
                                      ),
                               
                             ),
@@ -509,7 +516,62 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           )),
-          Text("Pippo"),
+          SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text("Here you can find all the statistics about your events!",
+                  style: TextStyle(color: Colors.teal[900], 
+                                  fontSize: 30, 
+                                  fontWeight: FontWeight.bold,),
+                  textAlign: TextAlign.center,
+                  ),
+                  Text("Number of events saved", 
+                    style: TextStyle(color: Colors.teal, 
+                              fontSize: 20, 
+                              fontWeight: FontWeight.bold,),
+                    textAlign: TextAlign.center,),
+                  Text("22",
+                      style: TextStyle(color: Colors.teal[400], 
+                                  fontSize: 50, 
+                                  fontWeight: FontWeight.bold,),
+                        textAlign: TextAlign.center,),
+                  Divider(color: Colors.teal.shade100,
+                          thickness: 2.0,),
+                  Text("Percentage of active participation in events", 
+                    style: TextStyle(color: Colors.teal, 
+                              fontSize: 20, 
+                              fontWeight: FontWeight.bold,),
+                    textAlign: TextAlign.center,),
+                  PieChart(dataMap: dataActivePart),
+                  /*PieChart(
+                    PieChartData(
+                      sections: [
+                        PieChartSectionData(value: 40, color: Colors.blue, title: 'A'),
+                        PieChartSectionData(value: 30, color: Colors.red, title: 'B'),
+                        PieChartSectionData(value: 20, color: Colors.green, title: 'C'),
+                        PieChartSectionData(value: 10, color: Colors.yellow, title: 'D'),],
+                    ),
+                    swapAnimationDuration: Duration(milliseconds: 150), // Optional
+                    swapAnimationCurve: Curves.linear, // Optional
+                  ),  */   
+                  Divider(color: Colors.teal.shade100,
+                          thickness: 2.0,),
+                  Text("Temporal distribution of events", 
+                    style: TextStyle(color: Colors.teal, 
+                              fontSize: 20, 
+                              fontWeight: FontWeight.bold,),
+                    textAlign: TextAlign.center,),
+                ],
+                ),
+          )]
+          )
+        ),
+
+
         ][currentPageIndex],
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -541,8 +603,8 @@ class _HomePageState extends State<HomePage> {
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.style_rounded),
-              label: 'Menage',
+              icon: Icon(Icons.manage_accounts_rounded),
+              label: 'Manage',
             ),
             NavigationDestination(
               icon: Icon(Icons.ssid_chart_rounded),
