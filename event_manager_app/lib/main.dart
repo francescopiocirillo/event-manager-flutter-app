@@ -11,8 +11,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Pippo");
-    print(Directory.current);
     return MaterialApp(
       title: 'Event Manager',
       home: HomePage(),

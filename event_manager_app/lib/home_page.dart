@@ -39,6 +39,18 @@ class Event {
       required this.expectedParticipants,
       required this.actualParticipants,
       required this.img});
+
+  Map<String, Object?> toMap() {
+    return {'title': title, 'desctiption': desctiption, 'startDate': startDate, 
+            'endDate': endDate, 'startHour': startHour, 'expectedParticipants': expectedParticipants, 
+            'actualParticipants': actualParticipants, 'img': img};
+  }
+
+  @override
+  String toString() {
+    return 'Event{title: $title, desctiption: $desctiption, startDate: $startDate, endDate: $endDate, startHour: $startHour, expectedParticipants: $expectedParticipants, actualParticipants: $actualParticipants, img: $img}';
+  }
+
 }
 
 class HomePage extends StatefulWidget {
