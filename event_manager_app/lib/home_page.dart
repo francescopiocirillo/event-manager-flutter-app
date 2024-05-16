@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
-import 'package:pie_chart/pie_chart.dart';/*
-import 'package:fl_chart/fl_chart.dart';*/
+import 'package:intl/intl.dart';/*
+import 'package:pie_chart/pie_chart.dart';*/
+import 'package:fl_chart/fl_chart.dart';
+
 class Person {
   String name;
   String lastName;
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<bool> isSelectedTogglePastIncomingEvents = [true, false];
   final List<bool> isSelectedThemeFilter = [true, true, true];
-
+  
   List<bool> _isOpen = [];
 
   _HomePageState() {
@@ -96,6 +97,53 @@ class _HomePageState extends State<HomePage> {
           .toList();
     });
   }
+  /*
+  List<int> numeroPartecipantiAttivi() {
+    List<int> numeri;
+    for(int i=0; i++; i<events.length){
+
+    }
+    return numeri;
+  }
+*/
+  LineChartBarData get lineChartBarData2_1 => LineChartBarData(
+        isCurved: true,
+        color: Colors.tealAccent.withOpacity(0.7),
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(show: false),
+        spots: const [
+          FlSpot(1, 1),
+          FlSpot(3, 4),
+          FlSpot(5, 1.8),
+          FlSpot(7, 5),
+          FlSpot(10, 2),
+          FlSpot(12, 2.2),
+          FlSpot(13, 1.8),
+        ],
+      );
+
+  LineChartBarData get lineChartBarData1_3 => LineChartBarData(
+        isCurved: true,
+        color: Colors.tealAccent[700],
+        barWidth: 5,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(show: true, color: Colors.red.shade300.withOpacity(0.7)),
+        spots: const [
+          FlSpot(1, 2.8),
+          FlSpot(3, 1.9),
+          FlSpot(6, 3),
+          FlSpot(10, 1.3),
+          FlSpot(13, 2.5),
+        ],
+      );
+  
+  List<LineChartBarData> get linesBarsData => [
+    lineChartBarData1_3,
+    lineChartBarData2_1
+  ];
+
 
   void applyFilters(close) {
     filterEvents(searchBarController.text);
@@ -278,6 +326,8 @@ class _HomePageState extends State<HomePage> {
       invalidPartecipant = "";
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -517,57 +567,73 @@ class _HomePageState extends State<HomePage> {
             ],
           )),
           SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text("Here you can find all the statistics about your events!",
-                  style: TextStyle(color: Colors.teal[900], 
-                                  fontSize: 30, 
-                                  fontWeight: FontWeight.bold,),
-                  textAlign: TextAlign.center,
-                  ),
-                  Text("Number of events saved", 
-                    style: TextStyle(color: Colors.teal, 
-                              fontSize: 20, 
-                              fontWeight: FontWeight.bold,),
-                    textAlign: TextAlign.center,),
-                  Text("22",
-                      style: TextStyle(color: Colors.teal[400], 
-                                  fontSize: 50, 
-                                  fontWeight: FontWeight.bold,),
-                        textAlign: TextAlign.center,),
-                  Divider(color: Colors.teal.shade100,
-                          thickness: 2.0,),
-                  Text("Percentage of active participation in events", 
-                    style: TextStyle(color: Colors.teal, 
-                              fontSize: 20, 
-                              fontWeight: FontWeight.bold,),
-                    textAlign: TextAlign.center,),
-                  PieChart(dataMap: dataActivePart),
-                  /*PieChart(
-                    PieChartData(
-                      sections: [
-                        PieChartSectionData(value: 40, color: Colors.blue, title: 'A'),
-                        PieChartSectionData(value: 30, color: Colors.red, title: 'B'),
-                        PieChartSectionData(value: 20, color: Colors.green, title: 'C'),
-                        PieChartSectionData(value: 10, color: Colors.yellow, title: 'D'),],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text("Here you can find all the statistics about your events!",
+                    style: TextStyle(color: Colors.teal[800], 
+                                    fontSize: 30, 
+                                    fontWeight: FontWeight.bold,),
+                    textAlign: TextAlign.center,
                     ),
-                    swapAnimationDuration: Duration(milliseconds: 150), // Optional
-                    swapAnimationCurve: Curves.linear, // Optional
-                  ),  */   
-                  Divider(color: Colors.teal.shade100,
-                          thickness: 2.0,),
-                  Text("Temporal distribution of events", 
-                    style: TextStyle(color: Colors.teal, 
-                              fontSize: 20, 
-                              fontWeight: FontWeight.bold,),
-                    textAlign: TextAlign.center,),
-                ],
-                ),
-          )]
+                    Text("Number of events saved", 
+                      style: TextStyle(color: Colors.teal, 
+                                fontSize: 20, 
+                                fontWeight: FontWeight.bold,),
+                      textAlign: TextAlign.center,),
+                    Text(events.length.toString(),
+                        style: TextStyle(color: Colors.teal[400], 
+                                    fontSize: 50, 
+                                    fontWeight: FontWeight.bold,),
+                          textAlign: TextAlign.center,),
+                    Divider(color: Colors.teal.shade100,
+                            thickness: 2.0,),
+                    Text("Percentage of active participation in events", 
+                      style: TextStyle(color: Colors.teal, 
+                                fontSize: 20, 
+                                fontWeight: FontWeight.bold,),
+                      textAlign: TextAlign.center,),
+                    /*PieChart(dataMap: dataActivePart),*/
+                    SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: PieChart(
+                        PieChartData(
+                        centerSpaceRadius: 45.0,
+                        sectionsSpace: 3.0,
+                          sections: [
+                            PieChartSectionData(value: 40, color: Colors.tealAccent[900], title: 'active'/*, badgeWidget: */),
+                            PieChartSectionData(value: 30, color: Colors.tealAccent, title: 'absent'),],
+                        ),
+                        swapAnimationDuration: Duration(milliseconds: 900), // Optional
+                        swapAnimationCurve: Curves.linear,
+                      ),
+                    ),     
+                    Divider(color: Colors.teal.shade100,
+                            thickness: 2.0,),
+                    Text("Temporal distribution of partecipants", 
+                      style: TextStyle(color: Colors.teal, 
+                                fontSize: 20, 
+                                fontWeight: FontWeight.bold,),
+                      textAlign: TextAlign.center,),
+                    SizedBox(
+                      width: 300,
+                      height: 300,
+                      child: LineChart(
+                                LineChartData(
+                                  borderData: FlBorderData(show: false), 
+                                  lineBarsData: linesBarsData,
+                                ),
+                              ),
+                    )],
+                  
+                  ),
+            )]
+            ),
           )
         ),
 
