@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:ffi';
+
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
 import 'package:flutter/cupertino.dart';
@@ -119,6 +122,35 @@ class _HomePageState extends State<HomePage> {
     return numeri;
   }
 
+  double numLineChart(int mese, String tipo){
+    List<double> partecipanti= [0,0];
+    int i;
+    int ret=0;
+    for(i=0; i<events.length; i++){
+      if(mese == events[i].startDate.month.toInt()){
+        if(tipo == 'actual'){
+          partecipanti[0] += events[i].actualParticipants;
+          ret=0;
+        }
+        else{
+          partecipanti[1] += events[i].expectedParticipants;
+          ret=1;
+        }
+      }
+    }
+    return partecipanti[ret];
+  }
+
+  List<FlSpot> lineGenerator(String tipo){
+    List<FlSpot> punti = [];
+    int i=0;
+    for(i=0; i<12; i++){
+      
+      punti.add(FlSpot((i + 1).toDouble(), numLineChart(i + 1, tipo)));
+    }
+    return punti;
+  }
+
   LineChartBarData get lineChartBarData2_1 => LineChartBarData(
         isCurved: true,
         color: Colors.tealAccent.withOpacity(0.7),
@@ -126,15 +158,8 @@ class _HomePageState extends State<HomePage> {
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 4),
-          FlSpot(5, 1.8),
-          FlSpot(7, 5),
-          FlSpot(10, 2),
-          FlSpot(12, 2.2),
-          FlSpot(13, 1.8),
-        ],
+        
+        spots: lineGenerator('expected')
       );
 
   LineChartBarData get lineChartBarData1_3 => LineChartBarData(
@@ -143,13 +168,7 @@ class _HomePageState extends State<HomePage> {
         barWidth: 5,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: true, color: Colors.red.shade300.withOpacity(0.7)),
-        spots: const [
-          FlSpot(1, 2.8),
-          FlSpot(3, 1.9),
-          FlSpot(6, 3),
-          FlSpot(10, 1.3),
-          FlSpot(13, 2.5),
-        ],
+        spots: lineGenerator('actual'),
       );
   
   List<LineChartBarData> get linesBarsData => [
@@ -340,7 +359,60 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+    );
+    Widget text;
+    switch (value.toInt()) {
+      case 1:
+        text = const Text('J', style: style); 
+        break;
+      case 2:
+        text = const Text('F', style: style);
+        break;
+      case 3:
+        text = const Text('M', style: style);
+        break;
+      case 4:
+        text = const Text('A', style: style); 
+        break;
+      case 5:
+        text = const Text('M', style: style);
+        break;
+      case 6:
+        text = const Text('J', style: style);
+        break;
+      case 7:
+        text = const Text('J', style: style); 
+        break;
+      case 8:
+        text = const Text('A', style: style);
+        break;
+      case 9:
+        text = const Text('S', style: style);
+        break;
+      case 10:
+        text = const Text('O', style: style); 
+        break;
+      case 11:
+        text = const Text('N', style: style);
+        break;
+      case 12:
+        text = const Text('D', style: style);
+        break;
+      default:
+        text = const Text('');
+        break;
+    }
 
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 10,
+      child: text,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -665,9 +737,40 @@ class _HomePageState extends State<HomePage> {
                           height: 300,
                           child: LineChart(
                                     LineChartData(
+                                      lineTouchData: LineTouchData(
+                                        enabled: true,
+                                        touchTooltipData: LineTouchTooltipData(    
+                                          tooltipRoundedRadius: 20.0,
+                                          fitInsideHorizontally: true,
+                                          fitInsideVertically: true,
+                                        )
+                                      ),
                                       borderData: FlBorderData(show: false), 
                                       lineBarsData: linesBarsData,
+                                      titlesData: FlTitlesData(
+
+                                        bottomTitles: AxisTitles(
+                                          sideTitles: SideTitles(
+                                            showTitles: true,
+                                            reservedSize: 32,
+                                            interval: 1,
+                                            getTitlesWidget: bottomTitleWidgets,
+                                            
+                                          ),
+                                        ),
+                                        rightTitles: const AxisTitles(
+                                          sideTitles: SideTitles(showTitles: false),
+
+                                        ),
+                                        topTitles: const AxisTitles(
+                                          sideTitles: SideTitles(showTitles: false),
+                                        ),/*
+                                        leftTitles: AxisTitles(
+                                          sideTitles: leftTitles(),
+                                        ),*/
+                                        )
                                     ),
+                                    
                                   ),
                         ),
                         Column(
