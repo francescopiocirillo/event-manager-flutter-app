@@ -24,7 +24,7 @@ class Person {
 
 class Event {
   String title;
-  String desctiption;
+  String description;
   DateTime startDate;
   DateTime endDate;
   TimeOfDay startHour;
@@ -35,7 +35,7 @@ class Event {
 
   Event(
       {required this.title,
-      required this.desctiption,
+      required this.description,
       required this.startDate,
       required this.endDate,
       required this.startHour,
@@ -44,14 +44,14 @@ class Event {
       required this.img});
 
   Map<String, Object?> toMap() {
-    return {'title': title, 'desctiption': desctiption, 'startDate': startDate, 
+    return {'title': title, 'description': description, 'startDate': startDate, 
             'endDate': endDate, 'startHour': startHour, 'expectedParticipants': expectedParticipants, 
             'actualParticipants': actualParticipants, 'img': img};
   }
 
   @override
   String toString() {
-    return 'Event{title: $title, desctiption: $desctiption, startDate: $startDate, endDate: $endDate, startHour: $startHour, expectedParticipants: $expectedParticipants, actualParticipants: $actualParticipants, img: $img}';
+    return 'Event{title: $title, description: $description, startDate: $startDate, endDate: $endDate, startHour: $startHour, expectedParticipants: $expectedParticipants, actualParticipants: $actualParticipants, img: $img}';
   }
 
 }
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   List<Event> events = [
     Event(
       title: 'Coachella',
-      desctiption:
+      description:
           'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
       startDate: DateTime(2024, 5, 7, 15, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     ),
     Event(
       title: 'Milano Fashon Week',
-      desctiption: 'parade',
+      description: 'parade',
       startDate: DateTime(2024, 2, 11, 08, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 22, minute: 30),
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
     int i;
     int ret=0;
     for(i=0; i<events.length; i++){
-      if(mese == events[i].startDate.month.toInt()){
+      if(mese == events[i].startDate.month.toInt() && DateTime.now().year == events[i].startDate.year){
         if(tipo == 'actual'){
           partecipanti[0] += events[i].actualParticipants;
           ret=0;
@@ -145,7 +145,6 @@ class _HomePageState extends State<HomePage> {
     List<FlSpot> punti = [];
     int i=0;
     for(i=0; i<12; i++){
-      
       punti.add(FlSpot((i + 1).toDouble(), numLineChart(i + 1, tipo)));
     }
     return punti;
@@ -262,40 +261,47 @@ class _HomePageState extends State<HomePage> {
         builder: (context, setState) {
           return AlertDialog(
             title: Text('Add new participant'),
-            content: Column(
-              children: [
-                TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'Name*',
-                      suffixText: 'required',
-                    ),
-                    controller: controller1,
-                ),
-                TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'Surname*',
-                      suffixText: 'required'
-                    ),
-                    controller: controller2,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(datePrompt),
-                      ElevatedButton(
-                        onPressed: () => _selectDates(context, setState),
-                        child: Icon(Icons.date_range_outlined),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Name*',
+                        suffixText: 'required',
                       ),
-                  ],),  
-                ),
-                Text(invalidPartecipant, style: TextStyle(color: Colors.red[300]),),
-            ],),
+                      controller: controller1,
+                  ),
+                  TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Surname*',
+                        suffixText: 'required'
+                      ),
+                      controller: controller2,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(datePrompt),
+                        ElevatedButton(
+                          onPressed: () => _selectDates(context, setState),
+                          child: Icon(Icons.date_range_outlined),
+                        ),
+                    ],),
+                  ),
+                  Text(invalidPartecipant, 
+                    style: TextStyle(
+                      color: Colors.red[300], 
+                      fontWeight: FontWeight.bold),
+                  )
+              ],),
+            ),
             actions: [
               TextButton(
+                clipBehavior: Clip.antiAlias,
                 onPressed: () => submitAddPerson(setState),
                 child: Text('ADD'),
               ),
@@ -312,27 +318,30 @@ class _HomePageState extends State<HomePage> {
           builder: (context, setState) {
             return AlertDialog(
               title: Text('Decide which filters to apply'),
-              content: Column(
-                children: [
-                  Text("Filter by theme:"),
-                  ToggleButtons(
-                    fillColor: Colors.teal,
-                    isSelected: isSelectedThemeFilter,
-                    onPressed: (int index) {
-                      setState(() {
-                        isSelectedThemeFilter[index] = !isSelectedThemeFilter[index];
-                      });
-                    },
-                    children: const <Widget>[
-                      CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 40),
-                      CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 40),
-                      CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 40),
-                    ],
-                  ),
-                ],
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text("Filter by theme:"),
+                    ToggleButtons(
+                      fillColor: Colors.teal,
+                      isSelected: isSelectedThemeFilter,
+                      onPressed: (int index) {
+                        setState(() {
+                          isSelectedThemeFilter[index] = !isSelectedThemeFilter[index];
+                        });
+                      },
+                      children: const <Widget>[
+                        CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 40),
+                        CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 40),
+                        CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 40),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
+                  clipBehavior: Clip.antiAlias,
                   onPressed: () {
                     applyFilters(true);
                   },
@@ -485,7 +494,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: Text(ev.desctiption),
+                                  child: Text(ev.description),
                                 ),
                                 ElevatedButton(
                                   child: Text('new participant'),
@@ -531,11 +540,13 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                 children: [
                   Expanded(
                     child: SearchBar(
+                      leading: const Icon(Icons.search_rounded),
                       onChanged: (value) {
                         applyFilters(false);
                       },
                       hintText: "Search by title",
                       controller: searchBarController,
+                      
                     ),
                   ),
                   Padding(
@@ -584,6 +595,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                 ),
                               ),
                               TextButton(
+                                clipBehavior: Clip.antiAlias,
                                 onPressed: () {
                                   Navigator.push(
                                           context,
@@ -603,7 +615,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                                         decoration: TextDecoration.underline,
                                                         decorationColor: Colors.red)
                                      ),
-                              
                             ),
                             ExpansionPanelList(
                               animationDuration:
@@ -724,7 +735,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                     ),     
                     Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
-                    Text("Temporal distribution of partecipants", 
+                    Text("Temporal distribution of partecipants during the year", 
                       style: TextStyle(color: Colors.teal, 
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
@@ -748,7 +759,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                       borderData: FlBorderData(show: false), 
                                       lineBarsData: linesBarsData,
                                       titlesData: FlTitlesData(
-
                                         bottomTitles: AxisTitles(
                                           sideTitles: SideTitles(
                                             showTitles: true,
@@ -764,10 +774,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                         ),
                                         topTitles: const AxisTitles(
                                           sideTitles: SideTitles(showTitles: false),
-                                        ),/*
-                                        leftTitles: AxisTitles(
-                                          sideTitles: leftTitles(),
-                                        ),*/
+                                        ),
                                         )
                                     ),
                                     
