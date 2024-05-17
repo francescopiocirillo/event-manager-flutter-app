@@ -72,7 +72,10 @@ class _NewEventState extends State<NewEvent> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Choose your event's theme!"),
+              child: Text("Choose your event's theme!",
+                    style: TextStyle(color: Colors.teal, 
+                                fontSize: 20, 
+                                fontWeight: FontWeight.bold,)),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
