@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class NewEvent extends StatefulWidget {
-  const NewEvent({super.key});
+  final Event? event;
+  const NewEvent({super.key,  this.event});
 
   @override
-  State<NewEvent> createState() => _NewEventState();
+  State<NewEvent> createState() => _NewEventState(event: event);
 }
-
 class _NewEventState extends State<NewEvent> {
+
+  final Event? event;
+  
+  
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
+  
+
   String datePrompt = "Select dates of the event";
   String timePrompt = "Select event's beginning hour";
   int _selectedImage = 0;
@@ -19,8 +25,30 @@ class _NewEventState extends State<NewEvent> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
-  double expectedParticipants = 12;
+  double expectedParticipants = 0;
   
+  _NewEventState({this.event}){
+    if(event != null){
+      if(event?.img == "assets/lavoro.jpg"){
+        _selectedImage = 0;
+      }else{
+        if(event?.img == "assets/cena.png"){
+          _selectedImage = 1;
+        }else{
+          _selectedImage = 2;
+        }
+      }
+      textNomeController.text = (event?.title)!;
+      textDescrizioneController.text = (event?.description)!;
+      expectedParticipants = (event?.expectedParticipants.toDouble())!;
+      datePrompt = "Selected date:\n" + DateFormat("EEE, MMM d, yyyy").format((event?.startDate)!)+" / "+
+          DateFormat("EEE, MMM d, yyyy").format((event?.startDate)!);
+      timePrompt = "Selected hour: " + 
+          DateFormat('h:mm a').format(DateTime(1,1,1, (event?.startHour.hour)!.toInt(), (event?.startHour.minute)!.toInt()));
+    }
+
+  }
+
   Future<void> _selectDates(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context, 
@@ -126,17 +154,17 @@ class _NewEventState extends State<NewEvent> {
               child: TextField(
                 controller: textNomeController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                   hintText: 'Inserire il nome dell\'evento',
                 )
-              ),
+              ), 
             ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
                 controller: textDescrizioneController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                   hintText: 'Inserire la descrizione dell\'evento',
                 ),
                 maxLines: 5,
@@ -171,8 +199,14 @@ class _NewEventState extends State<NewEvent> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context, Event(title: textNomeController.text, description: textDescrizioneController.text, 
-          startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
+          if(event != null){
+            
+          }
+          else{
+            Navigator.pop(context, Event(title: textNomeController.text, description: textDescrizioneController.text, 
+            startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), 
+            actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
+          }
         },
         child: const Icon(Icons.send_rounded),
       ),

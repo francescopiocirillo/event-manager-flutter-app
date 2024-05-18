@@ -83,8 +83,8 @@ class _HomePageState extends State<HomePage> {
       startDate: DateTime(2024, 2, 11, 08, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 22, minute: 30),
-      expectedParticipants: 5000,
-      actualParticipants: 4600,
+      expectedParticipants: 500,
+      actualParticipants: 460,
       img: 'assets/cena.png',
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
     ),
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
     return punti;
   }
 
-  LineChartBarData get lineChartBarData2_1 => LineChartBarData(
+  LineChartBarData get lineChartBarDataExpected => LineChartBarData(
         isCurved: true,
         color: Colors.tealAccent.withOpacity(0.7),
         barWidth: 3,
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
         spots: lineGenerator('expected')
       );
 
-  LineChartBarData get lineChartBarData1_3 => LineChartBarData(
+  LineChartBarData get lineChartBarDataActual => LineChartBarData(
         isCurved: true,
         color: Colors.tealAccent[600],
         barWidth: 5,
@@ -171,8 +171,8 @@ class _HomePageState extends State<HomePage> {
       );
   
   List<LineChartBarData> get linesBarsData => [
-    lineChartBarData1_3,
-    lineChartBarData2_1
+    lineChartBarDataActual,
+    lineChartBarDataExpected
   ];
 
 
@@ -600,7 +600,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                   Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => NewEvent()))
+                                              builder: (context) => NewEvent(event: ev,)))
                                       .then((newEvent) {
                                     if (newEvent != null) {
                                       setState(() {
@@ -701,8 +701,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                           width: 200,
                           height: 200,
                           child: PieChart(
-                            swapAnimationDuration: Duration(milliseconds: 150), // Optional
-                            swapAnimationCurve: Curves.decelerate,
                             PieChartData(
                               centerSpaceRadius: 45.0,
                               sectionsSpace: 3.0,
