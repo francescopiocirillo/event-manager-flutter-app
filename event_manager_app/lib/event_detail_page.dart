@@ -90,9 +90,11 @@ class EventDetailPage extends StatelessWidget {
                         ],
                       ),
                 ),
+                Divider(color: Colors.teal.shade100,
+                            thickness: 2.0,),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text(event.description),
+                  child: Text(event.description, textAlign: TextAlign.center),
                 ),
                 Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
