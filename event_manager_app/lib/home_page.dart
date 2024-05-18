@@ -483,7 +483,12 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal,
-          title: Text('Event Manager'),
+          title: Center(
+            child: Text('Thirty Green Events',
+            style: TextStyle(
+              fontWeight: FontWeight.bold, 
+              fontSize: 30, color: Colors.teal.shade900 ),),
+          ),
         ),
         body: <Widget>[
           SafeArea(
@@ -667,8 +672,8 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                         setState(() {
                                           newEvent.participants = ev.participants;
                                           newEvent.actualParticipants = ev.actualParticipants;
-                                          events.add(newEvent);
                                           events.remove(ev);
+                                          events.add(newEvent);
                                         });
                                       }else{
                                         setState(() {
