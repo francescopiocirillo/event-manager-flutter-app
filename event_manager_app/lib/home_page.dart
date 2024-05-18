@@ -603,13 +603,22 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                               builder: (context) => NewEvent(event: ev,)))
                                       .then((newEvent) {
                                     if (newEvent != null) {
-                                      setState(() {
-                                        events.add(newEvent);
-                                        _isOpen.add(false);
-                                      });
+                                      if(ev != null){
+                                        setState(() {
+                                          newEvent.participants = ev.participants;
+                                          newEvent.actualParticipants = ev.actualParticipants;
+                                          events.add(newEvent);
+                                          events.remove(ev);
+                                        });
+                                      }else{
+                                        setState(() {
+                                          events.add(newEvent);
+                                          _isOpen.add(false);
+                                        });
+                                      };
                                     }
                                   });
-                              },
+                                },
                               child: Text('Modify event information',
                                         style: TextStyle(color: Colors.red[300],
                                                         decoration: TextDecoration.underline,

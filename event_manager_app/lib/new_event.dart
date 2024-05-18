@@ -199,14 +199,9 @@ class _NewEventState extends State<NewEvent> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if(event != null){
-            
-          }
-          else{
-            Navigator.pop(context, Event(title: textNomeController.text, description: textDescrizioneController.text, 
-            startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), 
-            actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
-          }
+          Navigator.pop(context, Event(title: textNomeController.text, description: textDescrizioneController.text, 
+          startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), 
+          actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
         },
         child: const Icon(Icons.send_rounded),
       ),
