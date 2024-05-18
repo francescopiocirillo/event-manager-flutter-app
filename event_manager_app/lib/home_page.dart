@@ -550,12 +550,19 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
+                    padding: const EdgeInsets.all(7.0),
+                    child: SizedBox(
+                      height: 55,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 7, // Imposta l'elevazione desiderata
+                        ),
                         onPressed: () {
                           openApplyFiltersDialog();
                         },
-                        child: Text("Filters")),
+                        child: Text("Filter")),
+                      
+                    ),
                   )
                 ],
               ),
@@ -633,7 +640,13 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                               children: [
                                 ExpansionPanel(
                                   headerBuilder: (context, isExpanded) {
-                                    return Text("Hello");
+                                    return Text( (isExpanded? "Hide Attendees" : "View Attendees" ), 
+                                        textAlign: TextAlign.right, 
+                                        style: TextStyle(
+                                          height: 3.3, /*per allineare il testo alla freccia*/
+                                          color: const Color.fromARGB(225, 62,158,135),
+                                          fontWeight: FontWeight.bold)  
+                                        );
                                   }, 
                                   canTapOnHeader: true,
                                   body: SizedBox(
