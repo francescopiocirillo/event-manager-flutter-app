@@ -135,8 +135,8 @@ class _HomePageState extends State<HomePage> {
       startDate: DateTime(2024, 2, 11, 08, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 22, minute: 30),
-      expectedParticipants: 5000,
-      actualParticipants: 4600,
+      expectedParticipants: 500,
+      actualParticipants: 460,
       img: 'assets/cena.png',
       /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
     ),
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
     int i;
     int ret=0;
     for(i=0; i<events.length; i++){
-      if(mese == events[i].startDate.month.toInt()){
+      if(mese == events[i].startDate.month.toInt() && DateTime.now().year == events[i].startDate.year){
         if(tipo == 'actual'){
           partecipanti[0] += events[i].actualParticipants;
           ret=0;
@@ -198,13 +198,12 @@ class _HomePageState extends State<HomePage> {
     List<FlSpot> punti = [];
     int i=0;
     for(i=0; i<12; i++){
-      
       punti.add(FlSpot((i + 1).toDouble(), numLineChart(i + 1, tipo)));
     }
     return punti;
   }
 
-  LineChartBarData get lineChartBarData2_1 => LineChartBarData(
+  LineChartBarData get lineChartBarDataExpected => LineChartBarData(
         isCurved: true,
         color: Colors.tealAccent.withOpacity(0.7),
         barWidth: 3,
@@ -215,7 +214,7 @@ class _HomePageState extends State<HomePage> {
         spots: lineGenerator('expected')
       );
 
-  LineChartBarData get lineChartBarData1_3 => LineChartBarData(
+  LineChartBarData get lineChartBarDataActual => LineChartBarData(
         isCurved: true,
         color: Colors.tealAccent[600],
         barWidth: 5,
@@ -225,8 +224,8 @@ class _HomePageState extends State<HomePage> {
       );
   
   List<LineChartBarData> get linesBarsData => [
-    lineChartBarData1_3,
-    lineChartBarData2_1
+    lineChartBarDataActual,
+    lineChartBarDataExpected
   ];
 
   void applyFilters(close) {
@@ -331,40 +330,47 @@ class _HomePageState extends State<HomePage> {
         builder: (context, setState) {
           return AlertDialog(
             title: Text('Add new participant'),
-            content: Column(
-              children: [
-                TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'Name*',
-                      suffixText: 'required',
-                    ),
-                    controller: controller1,
-                ),
-                TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'Surname*',
-                      suffixText: 'required'
-                    ),
-                    controller: controller2,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(datePrompt),
-                      ElevatedButton(
-                        onPressed: () => _selectDates(context, setState),
-                        child: Icon(Icons.date_range_outlined),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Name*',
+                        suffixText: 'required',
                       ),
-                  ],),  
-                ),
-                Text(invalidPartecipant, style: TextStyle(color: Colors.red[300]),),
-            ],),
+                      controller: controller1,
+                  ),
+                  TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Surname*',
+                        suffixText: 'required'
+                      ),
+                      controller: controller2,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(datePrompt),
+                        ElevatedButton(
+                          onPressed: () => _selectDates(context, setState),
+                          child: Icon(Icons.date_range_outlined),
+                        ),
+                    ],),
+                  ),
+                  Text(invalidPartecipant, 
+                    style: TextStyle(
+                      color: Colors.red[300], 
+                      fontWeight: FontWeight.bold),
+                  )
+              ],),
+            ),
             actions: [
               TextButton(
+                clipBehavior: Clip.antiAlias,
                 onPressed: () => submitAddPerson(setState),
                 child: Text('ADD'),
               ),
@@ -381,27 +387,30 @@ class _HomePageState extends State<HomePage> {
           builder: (context, setState) {
             return AlertDialog(
               title: Text('Decide which filters to apply'),
-              content: Column(
-                children: [
-                  Text("Filter by theme:"),
-                  ToggleButtons(
-                    fillColor: Colors.teal,
-                    isSelected: isSelectedThemeFilter,
-                    onPressed: (int index) {
-                      setState(() {
-                        isSelectedThemeFilter[index] = !isSelectedThemeFilter[index];
-                      });
-                    },
-                    children: const <Widget>[
-                      CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 40),
-                      CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 40),
-                      CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 40),
-                    ],
-                  ),
-                ],
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text("Filter by theme:"),
+                    ToggleButtons(
+                      fillColor: Colors.teal,
+                      isSelected: isSelectedThemeFilter,
+                      onPressed: (int index) {
+                        setState(() {
+                          isSelectedThemeFilter[index] = !isSelectedThemeFilter[index];
+                        });
+                      },
+                      children: const <Widget>[
+                        CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 40),
+                        CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 40),
+                        CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 40),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
+                  clipBehavior: Clip.antiAlias,
                   onPressed: () {
                     applyFilters(true);
                   },
@@ -584,11 +593,13 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                 children: [
                   Expanded(
                     child: SearchBar(
+                      leading: const Icon(Icons.search_rounded),
                       onChanged: (value) {
                         applyFilters(false);
                       },
                       hintText: "Search by title",
                       controller: searchBarController,
+                      
                     ),
                   ),
                   Padding(
@@ -637,27 +648,36 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                 ),
                               ),
                               TextButton(
+                                clipBehavior: Clip.antiAlias,
                                 onPressed: () {
                                   Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => NewEvent()))
+                                              builder: (context) => NewEvent(event: ev,)))
                                       .then((newEvent) {
                                     if (newEvent != null) {
-                                      setState(() {
-                                        events.add(newEvent);
-                                        _isOpen.add(false);
-                                        DatabaseHelper.instance.insertEvento(ev);
-                                      });
+                                      if(ev != null){
+                                        setState(() {
+                                          newEvent.participants = ev.participants;
+                                          newEvent.actualParticipants = ev.actualParticipants;
+                                          events.add(newEvent);
+                                          events.remove(ev);
+                                        });
+                                      }else{
+                                        setState(() {
+                                          events.add(newEvent);
+                                          _isOpen.add(false);
+                                          DatabaseHelper.instance.insertEvento(ev);
+                                        });
+                                      };
                                     }
                                   });
-                              },
+                                },
                               child: Text('Modify event information',
                                         style: TextStyle(color: Colors.red[300],
                                                         decoration: TextDecoration.underline,
                                                         decorationColor: Colors.red)
                                      ),
-                              
                             ),
                             ExpansionPanelList(
                               animationDuration:
@@ -744,8 +764,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                           width: 200,
                           height: 200,
                           child: PieChart(
-                            swapAnimationDuration: Duration(milliseconds: 150), // Optional
-                            swapAnimationCurve: Curves.decelerate,
                             PieChartData(
                               centerSpaceRadius: 45.0,
                               sectionsSpace: 3.0,
@@ -778,7 +796,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                     ),     
                     Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
-                    Text("Temporal distribution of partecipants", 
+                    Text("Temporal distribution of partecipants during the year", 
                       style: TextStyle(color: Colors.teal, 
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
@@ -802,7 +820,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                       borderData: FlBorderData(show: false), 
                                       lineBarsData: linesBarsData,
                                       titlesData: FlTitlesData(
-
                                         bottomTitles: AxisTitles(
                                           sideTitles: SideTitles(
                                             showTitles: true,
@@ -818,10 +835,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                         ),
                                         topTitles: const AxisTitles(
                                           sideTitles: SideTitles(showTitles: false),
-                                        ),/*
-                                        leftTitles: AxisTitles(
-                                          sideTitles: leftTitles(),
-                                        ),*/
+                                        ),
                                         )
                                     ),
                                     
