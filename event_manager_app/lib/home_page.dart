@@ -23,6 +23,19 @@ class Person {
     required this.lastName,
     required this.birth
   });
+
+  Map<String, Object?> toMap() {
+    return {
+      'name': name,
+      'lastName': lastName,
+      'birth': birth.toString(),
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Person{name: $name, lastName: $lastName, birth: $birth}';
+  }
 }
 
 class Event {
@@ -45,6 +58,10 @@ class Event {
       required this.expectedParticipants,
       required this.actualParticipants,
       required this.img});
+
+  void setParticipants(List<Person> participants) {
+    this.participants = participants;
+  }
 
   Map<String, Object?> toMap() {
     return {'title': title, 'description': description, 'startDate': startDate.toString(), 
@@ -84,8 +101,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-  void _fetchEventi() async {
-    print("im fetching");
+  void _fetchParticipants() async {
     final db = DatabaseHelper.instance;
     final List<Map<String, dynamic>> maps =
         await db.database.then((db) => db.query('event'));
@@ -110,6 +126,51 @@ class _HomePageState extends State<HomePage> {
             actualParticipants: actualParticipants as int,
             img: img as String,
           );
+      });
+      events = events_from_db;
+      filteredEvents = events;
+    });
+  }
+
+  void _fetchEventi() async {
+    print("im fetching");
+    final db = DatabaseHelper.instance;
+    final List<Map<String, dynamic>> maps =
+        await db.database.then((db) => db.query('event'));
+    final List<Map<String, dynamic>> mapsParticipants =
+        await db.database.then((db) => db.query('participant'));
+
+    setState(() {
+      events_from_db = List.generate(maps.length, (i) {
+        final title = maps[i]['title'];
+        final description = maps[i]['description'];
+        final startDate = maps[i]['startDate'];
+        final endDate = maps[i]['endDate'];
+        final startHour = maps[i]['startHour'];
+        final expectedParticipants = maps[i]['expectedParticipants'];
+        final actualParticipants = maps[i]['actualParticipants'];
+        final img = maps[i]['img'];
+        final newEvent = Event(
+            title: title as String,
+            description: description as String,
+            startDate: DateTime.parse(startDate),
+            endDate: DateTime.parse(endDate),
+            startHour: parseTimeOfDay(startHour),
+            expectedParticipants: expectedParticipants as int,
+            actualParticipants: actualParticipants as int,
+            img: img as String,
+          );
+        List<Person?> participants = List.generate(mapsParticipants.length, (index) {
+          if(mapsParticipants[index]['event_title'] == newEvent.title) {
+            return Person(name: mapsParticipants[index]['name'], lastName: mapsParticipants[index]['last_name'], birth: mapsParticipants[index]['birth']);
+          }
+          else {
+            return null;
+          }
+        });
+        List<Person> participants_not_null = participants.whereType<Person>().toList();
+        newEvent.setParticipants(participants_not_null);
+        return newEvent;
       });
       events = events_from_db;
       filteredEvents = events;
@@ -306,16 +367,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void submitAddPerson(setState) {
+  void submitAddPerson(setState, eventTitle) {
     if(controller1.text == "" || controller2.text == "" || birthDate == DateTime.now()){
       setState(() {
         invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
       });
     }else{
-      Navigator.of(context).pop(Person(
+      Person new_participant = Person(
         name: controller1.text,
         lastName: controller2.text,
-        birth: birthDate));
+        birth: birthDate);
+      DatabaseHelper.instance.insertParticipant(eventTitle, new_participant);
+      Navigator.of(context).pop(new_participant);
       controller1.clear();
       controller2.clear();
       datePrompt = "Select date of birth";
@@ -323,7 +386,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<Person?> openAddParticipantDialog() => showDialog<Person>(
+  Future<Person?> openAddParticipantDialog(eventTitle) => showDialog<Person>(
     context: context,
     builder: (context) {
       return StatefulBuilder(
@@ -371,7 +434,7 @@ class _HomePageState extends State<HomePage> {
             actions: [
               TextButton(
                 clipBehavior: Clip.antiAlias,
-                onPressed: () => submitAddPerson(setState),
+                onPressed: () => submitAddPerson(setState, eventTitle),
                 child: Text('ADD'),
               ),
             ],
@@ -562,7 +625,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                     datePrompt = "Select date of birth";
                                     invalidPartecipant = "";
                                     final person =
-                                        await openAddParticipantDialog();
+                                        await openAddParticipantDialog(ev.title);
                                     if (person == null) return;
                                     setState(
                                       () {
