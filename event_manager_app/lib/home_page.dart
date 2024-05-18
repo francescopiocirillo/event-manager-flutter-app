@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:ffi';
 
+import 'package:event_manager_app/database_helper.dart';
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';/*
 import 'package:pie_chart/pie_chart.dart';*/
 import 'package:fl_chart/fl_chart.dart';
+import 'package:path/path.dart' as pathdb;
+import 'package:sqflite/sqflite.dart';
 class Person {
   String name;
   String lastName;
@@ -24,7 +27,7 @@ class Person {
 
 class Event {
   String title;
-  String desctiption;
+  String description;
   DateTime startDate;
   DateTime endDate;
   TimeOfDay startHour;
@@ -35,7 +38,7 @@ class Event {
 
   Event(
       {required this.title,
-      required this.desctiption,
+      required this.description,
       required this.startDate,
       required this.endDate,
       required this.startHour,
@@ -44,14 +47,14 @@ class Event {
       required this.img});
 
   Map<String, Object?> toMap() {
-    return {'title': title, 'desctiption': desctiption, 'startDate': startDate, 
-            'endDate': endDate, 'startHour': startHour, 'expectedParticipants': expectedParticipants, 
+    return {'title': title, 'description': description, 'startDate': startDate.toString(), 
+            'endDate': endDate.toString(), 'startHour': startHour.toString(), 'expectedParticipants': expectedParticipants, 
             'actualParticipants': actualParticipants, 'img': img};
   }
 
   @override
   String toString() {
-    return 'Event{title: $title, desctiption: $desctiption, startDate: $startDate, endDate: $endDate, startHour: $startHour, expectedParticipants: $expectedParticipants, actualParticipants: $actualParticipants, img: $img}';
+    return 'Event{title: $title, description: $description, startDate: $startDate, endDate: $endDate, startHour: $startHour, expectedParticipants: $expectedParticipants, actualParticipants: $actualParticipants, img: $img}';
   }
 
 }
@@ -64,10 +67,59 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  List<Event> events_from_db = [];
+
+  TimeOfDay parseTimeOfDay(String time) {
+  final format = RegExp(r'^([0-9]{2}):([0-9]{2})$');
+  final match = format.firstMatch(time.toString().substring(10, time.toString().length-1));
+  print(time.toString());
+  if (match != null) {
+    final hour = int.parse(match.group(1)!);
+    final minute = int.parse(match.group(2)!);
+
+    return TimeOfDay(hour: hour, minute: minute);
+  } else {
+    throw FormatException("Invalid time format");
+  }
+}
+
+  void _fetchEventi() async {
+    print("im fetching");
+    final db = DatabaseHelper.instance;
+    final List<Map<String, dynamic>> maps =
+        await db.database.then((db) => db.query('event'));
+
+    setState(() {
+      events_from_db = List.generate(maps.length, (i) {
+        final title = maps[i]['title'];
+        final description = maps[i]['description'];
+        final startDate = maps[i]['startDate'];
+        final endDate = maps[i]['endDate'];
+        final startHour = maps[i]['startHour'];
+        final expectedParticipants = maps[i]['expectedParticipants'];
+        final actualParticipants = maps[i]['actualParticipants'];
+        final img = maps[i]['img'];
+        return Event(
+            title: title as String,
+            description: description as String,
+            startDate: DateTime.parse(startDate),
+            endDate: DateTime.parse(endDate),
+            startHour: parseTimeOfDay(startHour),
+            expectedParticipants: expectedParticipants as int,
+            actualParticipants: actualParticipants as int,
+            img: img as String,
+          );
+      });
+      events = events_from_db;
+      filteredEvents = events;
+    });
+  }
+
   List<Event> events = [
     Event(
       title: 'Coachella',
-      desctiption:
+      description:
           'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
       startDate: DateTime(2024, 5, 7, 15, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
@@ -79,7 +131,7 @@ class _HomePageState extends State<HomePage> {
     ),
     Event(
       title: 'Milano Fashon Week',
-      desctiption: 'parade',
+      description: 'parade',
       startDate: DateTime(2024, 2, 11, 08, 30),
       endDate: DateTime(2024, 6, 7, 15, 30),
       startHour: TimeOfDay(hour: 22, minute: 30),
@@ -96,14 +148,15 @@ class _HomePageState extends State<HomePage> {
   final List<bool> isSelectedThemeFilter = [true, true, true];
   
   List<bool> _isOpen = [];
-
-  _HomePageState() {
-    _isOpen = List.generate(events.length, (index) => false);
-    filteredEvents = events;
-  }
-
   List<Event> filteredEvents = [];
  
+  _HomePageState() {
+    _isOpen = List.generate(events.length, (index) => false);
+    //filteredEvents = events;
+    _fetchEventi();
+    print(filteredEvents);
+  }
+
   void filterEvents(String query) {
     setState(() {
       filteredEvents = events
@@ -175,7 +228,6 @@ class _HomePageState extends State<HomePage> {
     lineChartBarData1_3,
     lineChartBarData2_1
   ];
-
 
   void applyFilters(close) {
     filterEvents(searchBarController.text);
@@ -252,6 +304,23 @@ class _HomePageState extends State<HomePage> {
         birthDate = picked;
         datePrompt = "Selected:" + DateFormat("yMd").format(birthDate);
       });
+    }
+  }
+
+  void submitAddPerson(setState) {
+    if(controller1.text == "" || controller2.text == "" || birthDate == DateTime.now()){
+      setState(() {
+        invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
+      });
+    }else{
+      Navigator.of(context).pop(Person(
+        name: controller1.text,
+        lastName: controller2.text,
+        birth: birthDate));
+      controller1.clear();
+      controller2.clear();
+      datePrompt = "Select date of birth";
+      invalidPartecipant = "";
     }
   }
 
@@ -342,22 +411,6 @@ class _HomePageState extends State<HomePage> {
             );
           },
         ));
-  void submitAddPerson(setState) {
-    if(controller1.text == "" || controller2.text == "" || birthDate == DateTime.now()){
-      setState(() {
-        invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
-      });
-    }else{
-      Navigator.of(context).pop(Person(
-        name: controller1.text,
-        lastName: controller2.text,
-        birth: birthDate));
-      controller1.clear();
-      controller2.clear();
-      datePrompt = "Select date of birth";
-      invalidPartecipant = "";
-    }
-  }
 
 Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
@@ -485,7 +538,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: Text(ev.desctiption),
+                                  child: Text(ev.description),
                                 ),
                                 ElevatedButton(
                                   child: Text('new participant'),
@@ -594,6 +647,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                       setState(() {
                                         events.add(newEvent);
                                         _isOpen.add(false);
+                                        DatabaseHelper.instance.insertEvento(ev);
                                       });
                                     }
                                   });
@@ -812,6 +866,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                 setState(() {
                   events.add(newEvent);
                   _isOpen.add(false);
+                  DatabaseHelper.instance.insertEvento(newEvent);
                 });
               }
             });
