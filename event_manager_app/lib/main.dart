@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Event Manager',
+      title: 'Thirty Green Events',
       home: HomePage(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
