@@ -144,6 +144,7 @@ class _HomePageState extends State<HomePage> {
       });
       events = events_from_db;
       filteredEvents = events;
+      _isOpen = List.generate(events.length, (index) => false);
     });
   }
 
@@ -182,7 +183,6 @@ class _HomePageState extends State<HomePage> {
   List<Event> filteredEvents = [];
  
   _HomePageState() {
-    _isOpen = List.generate(events.length, (index) => false);
     //filteredEvents = events;
     _fetchEventi();
     print(filteredEvents);
@@ -709,10 +709,18 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                         setState(() {
                                           newEvent.participants = ev.participants;
                                           newEvent.actualParticipants = ev.actualParticipants;
+                                          if(newEvent.title != ev.title) {
+                                            DatabaseHelper.instance.insertEvento(newEvent);
+                                            DatabaseHelper.instance.updateParticipants(newEvent.title, ev.title);
+                                            DatabaseHelper.instance.deleteEvento(ev);
+                                          } //WORK IN PROGRESS
+                                          else {
+                                            DatabaseHelper.instance.deleteEvento(ev);
+                                            DatabaseHelper.instance.insertEvento(newEvent);
+                                          }
                                           events.remove(ev);
                                           events.add(newEvent);
                                           applyFilters(false);
-                                          DatabaseHelper.instance.insertEvento(ev); // WIP ELIMINARE EVENTO VECCHIO DAL DB
                                         });
                                     }
                                   });
