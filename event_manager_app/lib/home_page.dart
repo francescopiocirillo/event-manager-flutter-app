@@ -954,6 +954,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                 setState(() {
                   events.add(newEvent);
                   _isOpen.add(false);
+                  applyFilters(false);
                   DatabaseHelper.instance.insertEvento(newEvent);
                 });
               }
