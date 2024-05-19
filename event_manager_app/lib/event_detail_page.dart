@@ -1,5 +1,6 @@
 import 'package:event_manager_app/home_page.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import  'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -142,19 +143,32 @@ class EventDetailPage extends StatelessWidget {
                     width: 150,
                     height: 150,
                     child: PieChart(
+
                       PieChartData(
-                        centerSpaceRadius: 30.0,
-                        sectionsSpace: 3.0,
+                        centerSpaceRadius: 40.0,
+                        sectionsSpace: 2.0,
                         sections: [
-                          PieChartSectionData(value: event.expectedParticipants.toDouble(), title: '${(event.expectedParticipants / (event.expectedParticipants+event.actualParticipants) * 100).toStringAsFixed(1)}%', color: Colors.teal, /*, badgeWidget: */),
-                          PieChartSectionData(value: event.actualParticipants.toDouble(), color: Colors.tealAccent, title: '${(event.actualParticipants / (event.expectedParticipants+event.actualParticipants) * 100).toStringAsFixed(1)}%'),],
+                          PieChartSectionData(
+                            showTitle: false,
+                            radius: 10,
+                            value: (event.expectedParticipants - event.actualParticipants).toDouble(),
+                            color: Colors.teal[100],),
+                          PieChartSectionData(
+                            gradient: SweepGradient(
+                              colors: [
+                                Colors.tealAccent.shade700,
+                                Colors.tealAccent.shade100,
+                              ],
+                            ),
+                            radius: 15,
+                            value: event.actualParticipants.toDouble(),  
+                            title: '${(event.actualParticipants / (event.expectedParticipants) * 100).toStringAsFixed(1)}%'),],
                       ),
                     ),
                   ),
                   Text('percentage of registered participants'),
                   ],
                   ),
-                  
                 ),
                 Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
@@ -172,22 +186,20 @@ class EventDetailPage extends StatelessWidget {
                       ),
                   ),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(), /*non si può scrollarre la lista, si scrolla solo l'intera pagina */
-                      itemCount: event.participants.length,
-                      itemBuilder: (context, index) {
-                        Person persona = event.participants[index]; 
-                        return ListTile(
-                          leading: CircleAvatar(
-                            child: Text(persona.name[0]),
-                          ),
-                          title: Text(persona.name + " " + persona.lastName),
-                          subtitle: Text(DateFormat("yMd").format(persona.birth)),
-                        );
-                      },
-                  ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(), /*non si può scrollarre la lista, si scrolla solo l'intera pagina */
+                    itemCount: event.participants.length,
+                    itemBuilder: (context, index) {
+                      Person persona = event.participants[index]; 
+                      return ListTile(
+                        leading: CircleAvatar(
+                          child: Text(persona.name[0]),
+                        ),
+                        title: Text(persona.name + " " + persona.lastName),
+                        subtitle: Text(DateFormat("yMd").format(persona.birth)),
+                      );
+                    },
                 )
               ],
             ),

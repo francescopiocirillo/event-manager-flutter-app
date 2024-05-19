@@ -594,48 +594,51 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                           isSelectedTogglePastIncomingEvents[1] &&
                               ev.endDate.compareTo(DateTime.now()) >= 0) {
                         return InkWell(
-                          child: Card(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    child:
-                                        Image.asset(ev.img, fit: BoxFit.cover),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 10),
+                                    child: Container(
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.8,
+                                      child:
+                                          Image.asset(ev.img, fit: BoxFit.cover),
+                                    ),
                                   ),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                    ev.title,
+                                  ListTile(
+                                    title: Text(
+                                      ev.title,
+                                    ),
+                                    subtitle: Text(
+                                        "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}\nParticipants ${ev.actualParticipants} of ${ev.expectedParticipants}"),
                                   ),
-                                  subtitle: Text(
-                                      "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}\nParticipants ${ev.actualParticipants} of ${ev.expectedParticipants}"),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Text(ev.description),
-                                ),
-                                ElevatedButton(
-                                  child: Text('new participant'),
-                                  onPressed: () async {
-                                    controller1.clear();
-                                    controller2.clear();
-                                    datePrompt = "Select date of birth";
-                                    invalidPartecipant = "";
-                                    final person =
-                                        await openAddParticipantDialog(ev.title);
-                                    if (person == null) return;
-                                    setState(
-                                      () {
-                                        ev.actualParticipants++;
-                                        ev.participants.add(person);
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(ev.description),
+                                  ),
+                                  ElevatedButton(
+                                    child: Text('new participant'),
+                                    onPressed: () async {
+                                      controller1.clear();
+                                      controller2.clear();
+                                      datePrompt = "Select date of birth";
+                                      invalidPartecipant = "";
+                                      final person =
+                                          await openAddParticipantDialog(ev.title);
+                                      if (person == null) return;
+                                      setState(
+                                        () {
+                                          ev.actualParticipants++;
+                                          ev.participants.add(person);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           onTap: () {
@@ -846,11 +849,31 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                           height: 200,
                           child: PieChart(
                             PieChartData(
-                              centerSpaceRadius: 45.0,
+                              centerSpaceRadius: 0.0,
                               sectionsSpace: 3.0,
                               sections: [
-                                PieChartSectionData(value: numeroPartecipantiAttivi()[0].toDouble(), title: '${(numeroPartecipantiAttivi()[0] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%', color: Colors.tealAccent[900], /*, badgeWidget: */),
-                                PieChartSectionData(value: numeroPartecipantiAttivi()[1].toDouble(), color: Colors.tealAccent, title: '${(numeroPartecipantiAttivi()[1] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%'),],
+                                PieChartSectionData(
+                                  radius: 80,
+                                  value: numeroPartecipantiAttivi()[0].toDouble(), 
+                                  title: '${(numeroPartecipantiAttivi()[0] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%', 
+                                  gradient: RadialGradient(
+                                    colors: [
+                                      Colors.teal.shade800,
+                                      Colors.teal.shade300,
+                                    ],
+                                  ),
+                                  ),
+                                PieChartSectionData(
+                                  radius: 70,
+                                  value: numeroPartecipantiAttivi()[1].toDouble(), 
+
+                                  gradient: RadialGradient(
+                                    colors: [
+                                      Colors.tealAccent.shade700,
+                                      Colors.tealAccent.shade100,
+                                    ],
+                                  ),
+                                  title: '${(numeroPartecipantiAttivi()[1] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%'),],
                             ),
                             
                           ),
