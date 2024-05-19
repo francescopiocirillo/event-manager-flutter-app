@@ -744,18 +744,33 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                         );
                                   }, 
                                   canTapOnHeader: true,
-                                  body: SizedBox(
-                                      height: 100,
-                                      child: ListView.builder(itemCount: ev.participants.length, itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(left: 5.0),
-                                          child: SingleChildScrollView(child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Text(ev.participants[index].name + " " + ev.participants[index].lastName + " " + "${DateFormat('yMd').format(ev.participants[index].birth)}"),
-                                          )),
-                                        );
-                                      },),
-                                    ),
+                                  body: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: ev.participants.length, 
+                                    itemBuilder: (context, index) {
+                                    
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 20.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 8.0),
+                                              child: Icon( (ev.img == 'assets/cena.png' ? 
+                                                    Icons.fastfood_rounded : 
+                                                    ev.img == 'assets/romantico.jpg' ? 
+                                                      Icons.favorite_rounded : 
+                                                      Icons.cases_rounded),
+                                                color: Colors.teal ),
+                                            ),                                            
+                                            Text( "${ev.participants[index].name} ${ev.participants[index].lastName} ${DateFormat('yMd').format(ev.participants[index].birth)}"),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },),
                                   isExpanded: _isOpen[index],
                                 ),
                               ],

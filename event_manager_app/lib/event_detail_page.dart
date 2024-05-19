@@ -140,10 +140,9 @@ class EventDetailPage extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: PieChart(
-
+                      width: 150,
+                      height: 150,
+                      child: PieChart(
                       PieChartData(
                         centerSpaceRadius: 40.0,
                         sectionsSpace: 2.0,
@@ -166,7 +165,7 @@ class EventDetailPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text('percentage of registered participants'),
+                  const Text('percentage of registered participants'),
                   ],
                   ),
                 ),
@@ -175,7 +174,7 @@ class EventDetailPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Center(
-                      child: Text( (event.participants.length == 0 ? 
+                      child: Text( (event.participants.isEmpty ? 
                           'The list of participants will be shown here when they are added' :
                           'List of participants'),
                         textAlign: TextAlign.center, 
@@ -188,7 +187,7 @@ class EventDetailPage extends StatelessWidget {
                 ),
                 ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(), /*non si può scrollarre la lista, si scrolla solo l'intera pagina */
+                    physics: const NeverScrollableScrollPhysics(), /*non si può scrollarre la lista, si scrolla solo l'intera pagina */
                     itemCount: event.participants.length,
                     itemBuilder: (context, index) {
                       Person persona = event.participants[index]; 
@@ -196,7 +195,7 @@ class EventDetailPage extends StatelessWidget {
                         leading: CircleAvatar(
                           child: Text(persona.name[0]),
                         ),
-                        title: Text(persona.name + " " + persona.lastName),
+                        title: Text("${persona.name} ${persona.lastName}"),
                         subtitle: Text(DateFormat("yMd").format(persona.birth)),
                       );
                     },
