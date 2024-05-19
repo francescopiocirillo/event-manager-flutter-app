@@ -17,7 +17,7 @@ class _NewEventState extends State<NewEvent> {
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
   
-
+  String pageTitle = "New event";
   String datePrompt = "Select dates of the event";
   String timePrompt = "Select event's beginning hour";
   int _selectedImage = 0;
@@ -29,6 +29,7 @@ class _NewEventState extends State<NewEvent> {
   
   _NewEventState({this.event}){
     if(event != null){
+      pageTitle= (event?.title)!;
       if(event?.img == "assets/lavoro.jpg"){
         _selectedImage = 0;
       }else{
@@ -93,7 +94,12 @@ class _NewEventState extends State<NewEvent> {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         centerTitle: true,
-        title: Text('Event Manager'),
+        title: Text(pageTitle, 
+            style: TextStyle(
+              fontWeight: FontWeight.bold, 
+              fontSize: 30, 
+              color: Colors.teal.shade900 ),
+                     ),
       ),
       body: SafeArea(
         child: Column(

@@ -29,14 +29,72 @@ class EventDetailPage extends StatelessWidget {
                   child: Image.asset(event.img, fit: BoxFit.cover),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.teal, // Colore del bordo
-                      width: 15, // Spessore del bordo
+                      color: Colors.teal, 
+                      width: 15, 
                     ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text(event.description),
+                  child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.teal,
+                              borderRadius: BorderRadius.circular(20) 
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text('Start date:'),
+                                  Text(DateFormat("dd MMM yy").format(event.startDate)),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.tealAccent[700],
+                              borderRadius: BorderRadius.circular(20) 
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text('Start hour:'),
+                                  Text(DateFormat('h:mm a').format(
+                                    DateTime(1,1,1,event.startHour.hour,event.startHour.minute)
+                                  ),)
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.tealAccent,
+                              borderRadius: BorderRadius.circular(20) 
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text('End date:'),
+                                  Text(DateFormat("dd MMM yy").format(event.endDate)),
+                                ],
+                              ),
+                            ),
+                          ), 
+                          
+                        ],
+                      ),
+                ),
+                Divider(color: Colors.teal.shade100,
+                            thickness: 2.0,),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(event.description, textAlign: TextAlign.center),
                 ),
                 Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
@@ -50,7 +108,7 @@ class EventDetailPage extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.teal,
-                              borderRadius: BorderRadius.circular(20) // Colore dello sfondo
+                              borderRadius: BorderRadius.circular(20) 
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -65,7 +123,7 @@ class EventDetailPage extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.tealAccent,
-                              borderRadius: BorderRadius.circular(30) // Colore dello sfondo
+                              borderRadius: BorderRadius.circular(20) 
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
