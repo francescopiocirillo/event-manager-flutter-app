@@ -9,19 +9,25 @@ class DatabaseHelper {
   static Database? _database;
   Future<Database> get database async => _database ??= await _initDatabase();
 
+  Future<void> deleteDatabase(String path) {
+    print("deletedb" + path);
+    return databaseFactory.deleteDatabase(path);
+  }
   Future<Database> _initDatabase() async {
+    print("INITDATABASE");
+    //await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
     return openDatabase(
       join(await getDatabasesPath(), 'mio_database.db'),
-      version: 4,
-      onCreate: (db, version) {
-        return db.execute(
+      version: 1,
+      onCreate: (db, version) async {
+        print("ONCREATE");
+        await db.execute(
           'CREATE TABLE event(title VARCHAR(20) PRIMARY KEY, description TEXT, startDate VARCHAR(50), endDate VARCHAR(50), startHour VARCHAR(50), expectedParticipants INT, actualParticipants INT, img varchar(30));',
         );
-      },
-      onUpgrade: (db, oldVersion, newVersion) {
-        db.execute(
-          'CREATE TABLE participant(name VARCHAR(20), last_name VARCHAR(20), birth VARCHAR(20), event_title, PRIMARY KEY(name, last_name), FOREIGN KEY(event_title) REFERENCES event(title);',
+        await db.execute(
+          'CREATE TABLE participant(name VARCHAR(20), last_name VARCHAR(20), birth VARCHAR(20), event_title VARCHAR(20), PRIMARY KEY(name, last_name), FOREIGN KEY(event_title) REFERENCES event(title));',
         );
+        
       },
     );
   }
