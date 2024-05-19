@@ -27,14 +27,14 @@ class Person {
   Map<String, Object?> toMap() {
     return {
       'name': name,
-      'lastName': lastName,
+      'last_name': lastName,
       'birth': birth.toString(),
     };
   }
 
   @override
   String toString() {
-    return 'Person{name: $name, lastName: $lastName, birth: $birth}';
+    return 'Person{name: $name, last_name: $lastName, birth: $birth}';
   }
 }
 
@@ -101,36 +101,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-  void _fetchParticipants() async {
-    final db = DatabaseHelper.instance;
-    final List<Map<String, dynamic>> maps =
-        await db.database.then((db) => db.query('event'));
-
-    setState(() {
-      events_from_db = List.generate(maps.length, (i) {
-        final title = maps[i]['title'];
-        final description = maps[i]['description'];
-        final startDate = maps[i]['startDate'];
-        final endDate = maps[i]['endDate'];
-        final startHour = maps[i]['startHour'];
-        final expectedParticipants = maps[i]['expectedParticipants'];
-        final actualParticipants = maps[i]['actualParticipants'];
-        final img = maps[i]['img'];
-        return Event(
-            title: title as String,
-            description: description as String,
-            startDate: DateTime.parse(startDate),
-            endDate: DateTime.parse(endDate),
-            startHour: parseTimeOfDay(startHour),
-            expectedParticipants: expectedParticipants as int,
-            actualParticipants: actualParticipants as int,
-            img: img as String,
-          );
-      });
-      events = events_from_db;
-      filteredEvents = events;
-    });
-  }
 
   void _fetchEventi() async {
     print("im fetching");
@@ -162,14 +132,14 @@ class _HomePageState extends State<HomePage> {
           );
         List<Person?> participants = List.generate(mapsParticipants.length, (index) {
           if(mapsParticipants[index]['event_title'] == newEvent.title) {
-            return Person(name: mapsParticipants[index]['name'], lastName: mapsParticipants[index]['last_name'], birth: mapsParticipants[index]['birth']);
+            return Person(name: mapsParticipants[index]['name'], lastName: mapsParticipants[index]['last_name'], birth: DateTime.parse(mapsParticipants[index]['birth']));
           }
           else {
             return null;
           }
         });
-        List<Person> participants_not_null = participants.whereType<Person>().toList();
-        newEvent.setParticipants(participants_not_null);
+        List<Person> participantsNotNull = participants.whereType<Person>().toList();
+        newEvent.setParticipants(participantsNotNull);
         return newEvent;
       });
       events = events_from_db;
