@@ -664,6 +664,8 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                 child: ListView.builder(
                     itemCount: filteredEvents.length,
                     itemBuilder: (context, index) {
+                      print("EVENTI LUNGHEZZA:" + filteredEvents.length.toString());
+                      print("EVENTI LUNGHEZZA:" + filteredEvents.toString());
                       final eventsIndex = index;
                       Event ev = filteredEvents[eventsIndex];
                       return InkWell(
@@ -704,20 +706,14 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                               builder: (context) => NewEvent(event: ev,)))
                                       .then((newEvent) {
                                     if (newEvent != null) {
-                                      if(ev != null){
                                         setState(() {
                                           newEvent.participants = ev.participants;
                                           newEvent.actualParticipants = ev.actualParticipants;
                                           events.remove(ev);
                                           events.add(newEvent);
+                                          applyFilters(false);
+                                          DatabaseHelper.instance.insertEvento(ev); // WIP ELIMINARE EVENTO VECCHIO DAL DB
                                         });
-                                      }else{
-                                        setState(() {
-                                          events.add(newEvent);
-                                          _isOpen.add(false);
-                                          DatabaseHelper.instance.insertEvento(ev);
-                                        });
-                                      };
                                     }
                                   });
                                 },
