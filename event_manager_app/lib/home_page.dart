@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:event_manager_app/database_helper.dart';
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
+import 'package:event_manager_app/notification_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:pie_chart/pie_chart.dart';*/
 import 'package:fl_chart/fl_chart.dart';
 import 'package:path/path.dart' as pathdb;
 import 'package:sqflite/sqflite.dart';
+
 class Person {
   String name;
   String lastName;
@@ -86,6 +88,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   List<Event> events_from_db = [];
+
+  //NotificationService _notificationService = NotificationService();
 
   TimeOfDay parseTimeOfDay(String time) {
   final format = RegExp(r'^([0-9]{2}):([0-9]{2})$');
@@ -991,6 +995,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                   _isOpen.add(false);
                   applyFilters(false);
                   DatabaseHelper.instance.insertEvento(newEvent);
+                  //_notificationService.scheduleNotification(newEvent);
                 });
               }
             });
