@@ -25,7 +25,7 @@ class DatabaseHelper {
           'CREATE TABLE event(title VARCHAR(20) PRIMARY KEY, description TEXT, startDate VARCHAR(50), endDate VARCHAR(50), startHour VARCHAR(50), expectedParticipants INT, actualParticipants INT, img varchar(30));',
         );
         await db.execute(
-          'CREATE TABLE participant(name VARCHAR(20), last_name VARCHAR(20), birth VARCHAR(20), event_title VARCHAR(20), PRIMARY KEY(name, last_name), FOREIGN KEY(event_title) REFERENCES event(title));',
+          'CREATE TABLE participant(name VARCHAR(20), last_name VARCHAR(20), birth VARCHAR(20), event_title VARCHAR(20), PRIMARY KEY(name, last_name), FOREIGN KEY(event_title) REFERENCES event(title) ON DELETE CASCADE);',
         );
         
       },
@@ -52,6 +52,13 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> deleteEvento(Event ev) async {
+    final db = await database;
+    print("elimina evento");
+    List<Object?> ev_title = [ev.title];
+    return db.delete("event", where: "title = ?", whereArgs: ev_title);
+  }
+
   Future<void> insertParticipant(String eventTitle, Person participant) async {
     final db = await database;
     print("sto inserendo partecipante");
@@ -62,6 +69,16 @@ class DatabaseHelper {
       ev_participant_map,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<int> updateParticipants(String new_title, String old_title) async {
+    final db = await database;
+    return db.rawUpdate('UPDATE Participant SET event_title = ? WHERE NAME = ?', [new_title, old_title]);
+  }
+
+  Future<int> updateEvent(Event old_ev, Event new_ev) async {
+    final db = await database;
+    return db.update('event', new_ev.toMap(), where: 'title = ?', whereArgs: [old_ev.title]);
   }
 
   // Tutti gli altri metodi
