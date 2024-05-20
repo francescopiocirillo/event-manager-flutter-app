@@ -715,8 +715,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                             DatabaseHelper.instance.deleteEvento(ev);
                                           } //WORK IN PROGRESS
                                           else {
-                                            DatabaseHelper.instance.deleteEvento(ev);
-                                            DatabaseHelper.instance.insertEvento(newEvent);
+                                            DatabaseHelper.instance.updateEvent(ev, newEvent);
                                           }
                                           events.remove(ev);
                                           events.add(newEvent);

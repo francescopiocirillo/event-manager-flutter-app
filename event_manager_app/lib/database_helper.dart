@@ -71,8 +71,14 @@ class DatabaseHelper {
     );
   }
 
-  void updateParticipants(String new_title, String old_title) {
+  Future<int> updateParticipants(String new_title, String old_title) async {
+    final db = await database;
+    return db.rawUpdate('UPDATE Participant SET event_title = ? WHERE NAME = ?', [new_title, old_title]);
+  }
 
+  Future<int> updateEvent(Event old_ev, Event new_ev) async {
+    final db = await database;
+    return db.update('event', new_ev.toMap(), where: 'title = ?', whereArgs: [old_ev.title]);
   }
 
   // Tutti gli altri metodi
