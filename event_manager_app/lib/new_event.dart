@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:event_manager_app/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -86,7 +88,7 @@ class _NewEventState extends State<NewEvent> {
     textDescrizioneController.dispose();
     super.dispose();
   }
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,105 +104,110 @@ class _NewEventState extends State<NewEvent> {
                      ),
       ),
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Choose your event's theme!",
-                    style: TextStyle(color: Colors.teal, 
-                                fontSize: 20, 
-                                fontWeight: FontWeight.bold,)),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedImage = 0;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                      child: CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 60,),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedImage = 1;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                      child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedImage = 2;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                      child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: textNomeController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                  hintText: 'Inserire il nome dell\'evento',
-                )
-              ), 
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: textDescrizioneController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                  hintText: 'Inserire la descrizione dell\'evento',
-                ),
-                maxLines: 5,
+        child: Form(
+          key: _formKey,
+          /*
+          autovalidateMode:  textDescrizioneController.text ??= textNomeController.text,*/
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Choose your event's theme!",
+                      style: TextStyle(color: Colors.teal, 
+                                  fontSize: 20, 
+                                  fontWeight: FontWeight.bold,)),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text("Insert number of expected participants"),
-            ),
-            Slider(
-              value: expectedParticipants,
-              min: 0,
-              max: 500,
-              divisions: 500,
-              label: expectedParticipants.toStringAsFixed(0),
-              onChanged: (newValue) {
-                setState(() {
-                  expectedParticipants = newValue;
-                });
-              },
-            ),
-            ElevatedButton(
-              onPressed: () => _selectDates(context),
-              child: Text(datePrompt),
-            ),
-            ElevatedButton(
-              onPressed: () => selectedTime(context),
-              child: Text(timePrompt),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedImage = 0;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
+                        child: CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 60,),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedImage = 1;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
+                        child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedImage = 2;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
+                        child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  controller: textNomeController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                    hintText: 'Inserire il nome dell\'evento',
+                  )
+                ), 
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  controller: textDescrizioneController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                    hintText: 'Inserire la descrizione dell\'evento',
+                  ),
+                  maxLines: 5,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text("Insert number of expected participants"),
+              ),
+              Slider(
+                value: expectedParticipants,
+                min: 0,
+                max: 500,
+                divisions: 500,
+                label: expectedParticipants.toStringAsFixed(0),
+                onChanged: (newValue) {
+                  setState(() {
+                    expectedParticipants = newValue;
+                  });
+                },
+              ),
+              ElevatedButton(
+                onPressed: () => _selectDates(context),
+                child: Text(datePrompt),
+              ),
+              ElevatedButton(
+                onPressed: () => selectedTime(context),
+                child: Text(timePrompt),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
