@@ -697,39 +697,56 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                   ],
                                 ),
                               ),
-                              TextButton(
-                                clipBehavior: Clip.antiAlias,
-                                onPressed: () {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => NewEvent(event: ev,)))
-                                      .then((newEvent) {
-                                    if (newEvent != null) {
-                                        setState(() {
-                                          newEvent.participants = ev.participants;
-                                          newEvent.actualParticipants = ev.actualParticipants;
-                                          if(newEvent.title != ev.title) {
-                                            DatabaseHelper.instance.insertEvento(newEvent);
-                                            DatabaseHelper.instance.updateParticipants(newEvent.title, ev.title);
-                                            DatabaseHelper.instance.deleteEvento(ev);
-                                          } //WORK IN PROGRESS
-                                          else {
-                                            DatabaseHelper.instance.updateEvent(ev, newEvent);
-                                          }
-                                          events.remove(ev);
-                                          events.add(newEvent);
-                                          applyFilters(false);
-                                        });
-                                    }
-                                  });
-                                },
-                              child: Text('Modify event information',
-                                        style: TextStyle(color: Colors.red[300],
-                                                        decoration: TextDecoration.underline,
-                                                        decorationColor: Colors.red)
-                                     ),
-                            ),
+                              Row(mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    clipBehavior: Clip.antiAlias,
+                                    onPressed: () {
+                                      Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => NewEvent(event: ev,)))
+                                          .then((newEvent) {
+                                        if (newEvent != null) {
+                                            setState(() {
+                                              newEvent.participants = ev.participants;
+                                              newEvent.actualParticipants = ev.actualParticipants;
+                                              if(newEvent.title != ev.title) {
+                                                DatabaseHelper.instance.insertEvento(newEvent);
+                                                DatabaseHelper.instance.updateParticipants(newEvent.title, ev.title);
+                                                DatabaseHelper.instance.deleteEvento(ev);
+                                              } //WORK IN PROGRESS
+                                              else {
+                                                DatabaseHelper.instance.updateEvent(ev, newEvent);
+                                              }
+                                              events.remove(ev);
+                                              events.add(newEvent);
+                                              applyFilters(false);
+                                            });
+                                        }
+                                      });
+                                    },
+                                    child: Text('Modify',
+                                            style: TextStyle(color: Colors.teal,
+                                                            decoration: TextDecoration.underline,
+                                                            decorationColor: Colors.teal)
+                                         ),
+                                  ),
+                                  TextButton(
+                                    clipBehavior: Clip.antiAlias,
+                                    onPressed: () {
+                                      DatabaseHelper.instance.deleteEvento(ev);
+                                      events.remove(ev);
+                                      applyFilters(false);
+                                    },
+                                    child: Text('Delete',
+                                              style: TextStyle(color: Colors.red[300],
+                                                              decoration: TextDecoration.underline,
+                                                              decorationColor: Colors.red)
+                                          ),
+                                  ),
+                                ],
+                              ),
                             ExpansionPanelList(
                               animationDuration:
                                 Duration(milliseconds: 1000),
