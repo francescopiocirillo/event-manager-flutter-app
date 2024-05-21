@@ -163,23 +163,33 @@ class _NewEventState extends State<NewEvent> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: TextField(
+                child: TextFormField(
                   controller: textNomeController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                    hintText: 'Inserire il nome dell\'evento',
-                  )
+                    hintText: 'Insert event name',
+                  ),
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return 'Please, insert event name';
+                    }
+                  },
                 ), 
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: TextField(
+                child: TextFormField(
                   controller: textDescrizioneController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                     hintText: 'Inserire la descrizione dell\'evento',
                   ),
                   maxLines: 5,
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return 'Please, insert event description';
+                    }
+                  },
                 ),
               ),
               Padding(
@@ -212,10 +222,15 @@ class _NewEventState extends State<NewEvent> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context, Event(title: textNomeController.text, description: textDescrizioneController.text, 
-          startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), 
-          actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
-        },
+          if(_formKey.currentState!.validate()){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Data are being processed...'), backgroundColor: Colors.teal),
+            );
+            Navigator.pop(context, Event(title: textNomeController.text, description: textDescrizioneController.text, 
+            startDate: startDate, endDate: endDate, startHour: startTime, expectedParticipants: expectedParticipants.toInt(), 
+            actualParticipants: 0, img: _selectedImage == 0 ? "assets/lavoro.jpg" : (_selectedImage == 1 ? "assets/cena.png" : "assets/romantico.jpg")));
+          }
+          },
         child: const Icon(Icons.send_rounded),
       ),
     );

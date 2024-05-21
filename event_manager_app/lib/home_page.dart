@@ -4,7 +4,6 @@ import 'dart:ffi';
 import 'package:event_manager_app/database_helper.dart';
 import 'package:event_manager_app/event_detail_page.dart';
 import 'package:event_manager_app/new_event.dart';
-import 'package:event_manager_app/notification_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -342,7 +341,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void submitAddPerson(setState, eventTitle) {
-    if(controller1.text == "" || controller2.text == "" || birthDate == DateTime.now()){
+    if(controller1.text == "" || controller2.text == "" || birthDate.isAtSameMomentAs(DateTime.now()) ){
       setState(() {
         invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
       });
