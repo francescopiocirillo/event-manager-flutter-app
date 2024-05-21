@@ -59,7 +59,8 @@ class Event {
       required this.startHour,
       required this.expectedParticipants,
       required this.actualParticipants,
-      required this.img});
+      required this.img,
+      this.participants = const []});
 
   void setParticipants(List<Person> participants) {
     this.participants = participants;
