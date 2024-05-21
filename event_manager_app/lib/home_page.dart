@@ -980,8 +980,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
             ),
           )
         ),
-
-
         ][currentPageIndex],
         floatingActionButton: FloatingActionButton(
           onPressed: () {
