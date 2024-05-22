@@ -14,6 +14,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:path/path.dart' as pathdb;
 import 'package:sqflite/sqflite.dart';
 
+/**
+ * Definizione della classe Person e della classe
+ * Event per la memorizzazione di eventi e 
+ * relativi partecipanti
+ */
 class Person {
   String name;
   String lastName;
@@ -87,27 +92,53 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  List<Event> events_from_db = [];
+  /** Attributi relativi a tutte le pagine */
+  int currentPageIndex = 0;
+  List<Event> events = [];
+  /** Attributi relativi alla prima pagina (Dashboard) */
+  List<bool> isSelectedTogglePastIncomingEvents = [true, false];
+  String invalidParticipant = "";
+  DateTime birthDate = DateTime.now();
+  String datePrompt = "Select date of birth*";
+  final TextEditingController controller1 = TextEditingController();
+  final TextEditingController controller2 = TextEditingController();
+  /** Attributi relativi alla seconda pagina (Gestione evento) */
+  List<bool> _isOpen = [];
+  List<Event> filteredEvents = [];
+  List<bool> isSelectedThemeFilter = [true, true, true];
+  final TextEditingController searchBarController = TextEditingController();
+  /** Attributi relativi alla quarta pagina (Statistiche) */
+  LineChartBarData get lineChartBarDataExpected => LineChartBarData(
+        isCurved: true,
+        color: Colors.tealAccent.withOpacity(0.7),
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(show: false),
+        
+        spots: lineGenerator('expected')
+      );
 
-  //NotificationService _notificationService = NotificationService();
+  LineChartBarData get lineChartBarDataActual => LineChartBarData(
+        isCurved: true,
+        color: Colors.tealAccent[600],
+        barWidth: 5,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(show: true, color: Colors.red.shade300.withOpacity(0.7)),
+        spots: lineGenerator('actual'),
+      );
+  
+  List<LineChartBarData> get linesBarsData => [
+    lineChartBarDataActual,
+    lineChartBarDataExpected
+  ];
 
-  TimeOfDay parseTimeOfDay(String time) {
-  final format = RegExp(r'^([0-9]{2}):([0-9]{2})$');
-  final match = format.firstMatch(time.toString().substring(10, time.toString().length-1));
-  print(time.toString());
-  if (match != null) {
-    final hour = int.parse(match.group(1)!);
-    final minute = int.parse(match.group(2)!);
-
-    return TimeOfDay(hour: hour, minute: minute);
-  } else {
-    throw FormatException("Invalid time format");
+  _HomePageState() {
+    _fetchEventi();
   }
-}
 
-
+  /** Metodi e funzioni relative alla prima pagina (Dashboard) */
   void _fetchEventi() async {
-    print("im fetching");
     final db = DatabaseHelper.instance;
     final List<Map<String, dynamic>> maps =
         await db.database.then((db) => db.query('event'));
@@ -115,7 +146,7 @@ class _HomePageState extends State<HomePage> {
         await db.database.then((db) => db.query('participant'));
 
     setState(() {
-      events_from_db = List.generate(maps.length, (i) {
+      events = List.generate(maps.length, (i) {
         final title = maps[i]['title'];
         final description = maps[i]['description'];
         final startDate = maps[i]['startDate'];
@@ -146,52 +177,127 @@ class _HomePageState extends State<HomePage> {
         newEvent.setParticipants(participantsNotNull);
         return newEvent;
       });
-      events = events_from_db;
       filteredEvents = events;
       _isOpen = List.generate(events.length, (index) => false);
     });
   }
 
-  List<Event> events = [
-    Event(
-      title: 'Coachella',
-      description:
-          'Il Coachella Valley Music and Arts Festival, comunemente conosciuto come Coachella, è uno dei festival musicali più celebri al mondo. Si tiene annualmente nella Valle di Coachella, nella contea di Riverside, in California, vicino alla città di Indio. Fondato nel 1999 da Paul Tollett e organizzato dalla società di promozione Goldenvoice, il Coachella Festival è diventato un\'icona della cultura musicale e dei festival.',
-      startDate: DateTime(2024, 5, 7, 15, 30),
-      endDate: DateTime(2024, 6, 7, 15, 30),
-      startHour: TimeOfDay(hour: 12, minute: 00),
-      expectedParticipants: 300,
-      actualParticipants: 200,
-      img: 'assets/romantico.jpg',
-      /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
-    ),
-    Event(
-      title: 'Milano Fashon Week',
-      description: 'parade',
-      startDate: DateTime(2024, 2, 11, 08, 30),
-      endDate: DateTime(2024, 6, 7, 15, 30),
-      startHour: TimeOfDay(hour: 22, minute: 30),
-      expectedParticipants: 500,
-      actualParticipants: 460,
-      img: 'assets/cena.png',
-      /*img: File('./storage/emulated/0/Pictures/IMG_20240508_104350.jpg'),*/
-    ),
-  ];
+  TimeOfDay parseTimeOfDay(String time) {
+    final format = RegExp(r'^([0-9]{2}):([0-9]{2})$');
+    final match = format.firstMatch(time.toString().substring(10, time.toString().length-1));
+    if (match != null) {
+      final hour = int.parse(match.group(1)!);
+      final minute = int.parse(match.group(2)!);
 
-  int currentPageIndex = 0;
-
-  final List<bool> isSelectedTogglePastIncomingEvents = [true, false];
-  final List<bool> isSelectedThemeFilter = [true, true, true];
-  
-  List<bool> _isOpen = [];
-  List<Event> filteredEvents = [];
- 
-  _HomePageState() {
-    //filteredEvents = events;
-    _fetchEventi();
-    print(filteredEvents);
+      return TimeOfDay(hour: hour, minute: minute);
+    } else {
+      throw FormatException("Invalid time format");
+    }
   }
 
+  Future<Person?> openAddParticipantDialog(eventTitle) => showDialog<Person>(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Add new participant'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Name*',
+                        suffixText: 'required',
+                      ),
+                      controller: controller1,
+                  ),
+                  TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Surname*',
+                        suffixText: 'required'
+                      ),
+                      controller: controller2,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(datePrompt),
+                        ElevatedButton(
+                          onPressed: () => _selectDates(context, setState),
+                          child: Icon(Icons.date_range_outlined),
+                        ),
+                    ],),
+                  ),
+                  Text(invalidParticipant, 
+                    style: TextStyle(
+                      color: Colors.red[300], 
+                      fontWeight: FontWeight.bold),
+                  )
+              ],),
+            ),
+            actions: [
+              TextButton(
+                clipBehavior: Clip.antiAlias,
+                onPressed: () => submitAddPerson(setState, eventTitle),
+                child: Text('ADD'),
+              ),
+            ],
+            
+          );
+        }
+      );
+    }
+  );
+
+  Future<void> _selectDates(BuildContext context, setState) async {
+    final DateTime? picked = await showDatePicker(
+      context: context, 
+      firstDate: DateTime(1900, 1, 1), 
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        birthDate = picked;
+        datePrompt = "Selected:" + DateFormat("yMd").format(birthDate);
+      });
+    }
+  }
+
+  void submitAddPerson(setState, eventTitle) {
+    if(controller1.text == "" || controller2.text == "" || birthDate.isAtSameMomentAs(DateTime.now()) ){
+      setState(() {
+        invalidParticipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
+      });
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Data are being processed...'), backgroundColor: Colors.teal),
+            );
+      Person new_participant = Person(
+        name: controller1.text,
+        lastName: controller2.text,
+        birth: birthDate);
+      DatabaseHelper.instance.insertParticipant(eventTitle, new_participant);
+      Navigator.of(context).pop(new_participant);
+      controller1.clear();
+      controller2.clear();
+      datePrompt = "Select date of birth";
+      invalidParticipant = "";
+    }
+  }
+
+  @override
+  void dispose() {
+    controller1.dispose();
+    controller2.dispose();
+    super.dispose();
+  }
+
+  /** Metodi e funzioni relative alla seconda pagina (Gestione evento) */
   void filterEvents(String query) {
     setState(() {
       filteredEvents = events
@@ -199,69 +305,6 @@ class _HomePageState extends State<HomePage> {
           .toList();
     });
   }
-  
-  List<int> numeroPartecipantiAttivi() {
-    List<int> numeri= [0,0];
-    int i;
-    for(i=0; i<events.length; i++){
-      numeri[0] += events[i].actualParticipants;
-      numeri[1] += (events[i].expectedParticipants - events[i].actualParticipants);
-    }
-    return numeri;
-  }
-
-  double numLineChart(int mese, String tipo){
-    List<double> partecipanti= [0,0];
-    int i;
-    int ret=0;
-    for(i=0; i<events.length; i++){
-      if(mese == events[i].startDate.month.toInt() && DateTime.now().year == events[i].startDate.year){
-        if(tipo == 'actual'){
-          partecipanti[0] += events[i].actualParticipants;
-          ret=0;
-        }
-        else{
-          partecipanti[1] += events[i].expectedParticipants;
-          ret=1;
-        }
-      }
-    }
-    return partecipanti[ret];
-  }
-
-  List<FlSpot> lineGenerator(String tipo){
-    List<FlSpot> punti = [];
-    int i=0;
-    for(i=0; i<12; i++){
-      punti.add(FlSpot((i + 1).toDouble(), numLineChart(i + 1, tipo)));
-    }
-    return punti;
-  }
-
-  LineChartBarData get lineChartBarDataExpected => LineChartBarData(
-        isCurved: true,
-        color: Colors.tealAccent.withOpacity(0.7),
-        barWidth: 3,
-        isStrokeCapRound: true,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        
-        spots: lineGenerator('expected')
-      );
-
-  LineChartBarData get lineChartBarDataActual => LineChartBarData(
-        isCurved: true,
-        color: Colors.tealAccent[600],
-        barWidth: 5,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: true, color: Colors.red.shade300.withOpacity(0.7)),
-        spots: lineGenerator('actual'),
-      );
-  
-  List<LineChartBarData> get linesBarsData => [
-    lineChartBarDataActual,
-    lineChartBarDataExpected
-  ];
 
   void applyFilters(close) {
     filterEvents(searchBarController.text);
@@ -308,126 +351,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  final TextEditingController controller1 = TextEditingController();
-  final TextEditingController controller2 = TextEditingController();
-  Map<String, double> dataActivePart = { /*dat per il diagramma a torta delle statistiche */
-    "active": 5,
-    "expected": 3,
-  };
-  final TextEditingController searchBarController = TextEditingController();
-
-  @override
-  void dispose() {
-    controller1.dispose();
-    controller2.dispose();
-    super.dispose();
-  }
-
-  DateTime birthDate = DateTime.now();
-  String datePrompt = "Select date of birth*";
-  String invalidPartecipant = "";
-  
-
-  Future<void> _selectDates(BuildContext context, setState) async {
-    final DateTime? picked = await showDatePicker(
-      context: context, 
-      firstDate: DateTime(1900, 1, 1), 
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      setState(() {
-        birthDate = picked;
-        datePrompt = "Selected:" + DateFormat("yMd").format(birthDate);
-      });
-    }
-  }
-
-  void submitAddPerson(setState, eventTitle) {
-    if(controller1.text == "" || controller2.text == "" || birthDate.isAtSameMomentAs(DateTime.now()) ){
-      setState(() {
-        invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
-      });
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Data are being processed...'), backgroundColor: Colors.teal),
-            );
-      Person new_participant = Person(
-        name: controller1.text,
-        lastName: controller2.text,
-        birth: birthDate);
-      DatabaseHelper.instance.insertParticipant(eventTitle, new_participant);
-      Navigator.of(context).pop(new_participant);
-      controller1.clear();
-      controller2.clear();
-      datePrompt = "Select date of birth";
-      invalidPartecipant = "";
-    }
-  }
-
-  Future<Person?> openAddParticipantDialog(eventTitle) => showDialog<Person>(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-            title: Text('Add new participant'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        labelText: 'Name*',
-                        suffixText: 'required',
-                      ),
-                      controller: controller1,
-                  ),
-                  TextField(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        labelText: 'Surname*',
-                        suffixText: 'required'
-                      ),
-                      controller: controller2,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(datePrompt),
-                        ElevatedButton(
-                          onPressed: () => _selectDates(context, setState),
-                          child: Icon(Icons.date_range_outlined),
-                        ),
-                    ],),
-                  ),
-                  Text(invalidPartecipant, 
-                    style: TextStyle(
-                      color: Colors.red[300], 
-                      fontWeight: FontWeight.bold),
-                  )
-              ],),
-            ),
-            actions: [
-              TextButton(
-                clipBehavior: Clip.antiAlias,
-                onPressed: () => submitAddPerson(setState, eventTitle),
-                child: Text('ADD'),
-              ),
-            ],
-            
-          );
-        }
-      );
-    }
-  );
   Future<Person?> openApplyFiltersDialog() => showDialog<Person>(
         context: context,
         builder: (context) => StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Decide which filters to apply'),
+              title: Text('Filter the events'),
               content: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -462,7 +391,46 @@ class _HomePageState extends State<HomePage> {
           },
         ));
 
-Widget bottomTitleWidgets(double value, TitleMeta meta) {
+  /** Metodi e funzioni relative alla quarta pagina (Statistiche) */
+  List<int> numeroPartecipantiAttivi() {
+    List<int> numeri= [0,0];
+    int i;
+    for(i=0; i<events.length; i++){
+      numeri[0] += events[i].actualParticipants;
+      numeri[1] += (events[i].expectedParticipants - events[i].actualParticipants);
+    }
+    return numeri;
+  }
+
+  double numLineChart(int mese, String tipo){
+    List<double> partecipanti= [0,0];
+    int i;
+    int ret=0;
+    for(i=0; i<events.length; i++){
+      if(mese == events[i].startDate.month.toInt() && DateTime.now().year == events[i].startDate.year){
+        if(tipo == 'actual'){
+          partecipanti[0] += events[i].actualParticipants;
+          ret=0;
+        }
+        else{
+          partecipanti[1] += events[i].expectedParticipants;
+          ret=1;
+        }
+      }
+    }
+    return partecipanti[ret];
+  }
+
+  List<FlSpot> lineGenerator(String tipo){
+    List<FlSpot> punti = [];
+    int i=0;
+    for(i=0; i<12; i++){
+      punti.add(FlSpot((i + 1).toDouble(), numLineChart(i + 1, tipo)));
+    }
+    return punti;
+  }
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
@@ -605,7 +573,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                       controller1.clear();
                                       controller2.clear();
                                       datePrompt = "Select date of birth";
-                                      invalidPartecipant = "";
+                                      invalidParticipant = "";
                                       final person =
                                           await openAddParticipantDialog(ev.title);
                                       if (person == null) return;
@@ -636,7 +604,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
               ),
             ],
           )),
-          //menagment page
+          //management page
           SafeArea(
               child: Column(
             children: [
@@ -855,7 +823,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,),
-                    /*PieChart(dataMap: dataActivePart),*/
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
