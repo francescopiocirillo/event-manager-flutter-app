@@ -344,7 +344,7 @@ class DatabaseHelper {
   }
   Future<Database> _initDatabase() async {
     print("INITDATABASE");
- //   await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
+    //await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
     return openDatabase(
       join(await getDatabasesPath(), 'mio_database.db'),
       version: 1,
