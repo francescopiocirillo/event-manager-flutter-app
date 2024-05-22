@@ -102,122 +102,129 @@ class _NewEventState extends State<NewEvent> {
               fontWeight: FontWeight.bold, 
               fontSize: 30, 
               color: Colors.teal.shade900 ),
-                     ),
+                  ),
       ),
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          /*
-          autovalidateMode:  textDescrizioneController.text ??= textNomeController.text,*/
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Choose your event's theme!",
-                      style: TextStyle(color: Colors.teal, 
-                                  fontSize: 20, 
-                                  fontWeight: FontWeight.bold,)),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedImage = 0;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 0 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                        child: CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 60,),
+        child: SingleChildScrollView( //per permettere la visualizzazione anche con lo schermo in orizzontale
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Choose your event's theme!",
+                        style: TextStyle(color: Colors.teal, 
+                                    fontSize: 20, 
+                                    fontWeight: FontWeight.bold,)),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedImage = 0;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 3, 
+                              color: _selectedImage == 0 ? 
+                                Colors.red:Colors.transparent), 
+                              shape: BoxShape.circle),
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage("assets/lavoro.jpg"), 
+                            radius: 60,),
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedImage = 1;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                        child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedImage = 1;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
+                          child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedImage = 2;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                        child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedImage = 2;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
+                          child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
+                        ),
                       ),
                     ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextFormField(
+                    controller: textNomeController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                      hintText: 'Insert event name',
+                    ),
+                    validator: (value) {
+                      if(value == null || value.isEmpty || (event == null && events!.any((element) => element.title == textNomeController.text))){
+                        return 'Please, insert event name (duplicate names not allowed)';
+                      }
+                    },
+                  ), 
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextFormField(
+                    controller: textDescrizioneController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                      hintText: 'Insert event description',
+                    ),
+                    maxLines: 5,
+                    validator: (value) {
+                      if(value == null || value.isEmpty){
+                        return 'Please, insert event description';
+                      }
+                    },
                   ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextFormField(
-                  controller: textNomeController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                    hintText: 'Insert event name',
-                  ),
-                  validator: (value) {
-                    if(value == null || value.isEmpty || (event == null && events!.any((element) => element.title == textNomeController.text))){
-                      return 'Please, insert event name (duplicate names not allowed)';
-                    }
-                  },
-                ), 
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextFormField(
-                  controller: textDescrizioneController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                    hintText: 'Insert event description',
-                  ),
-                  maxLines: 5,
-                  validator: (value) {
-                    if(value == null || value.isEmpty){
-                      return 'Please, insert event description';
-                    }
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text("Insert number of expected participants"),
+                ),
+                Slider(
+                  value: expectedParticipants,
+                  min: 0,
+                  max: 500,
+                  divisions: 500,
+                  label: expectedParticipants.toStringAsFixed(0),
+                  onChanged: (newValue) {
+                    setState(() {
+                      expectedParticipants = newValue;
+                    });
                   },
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text("Insert number of expected participants"),
-              ),
-              Slider(
-                value: expectedParticipants,
-                min: 0,
-                max: 500,
-                divisions: 500,
-                label: expectedParticipants.toStringAsFixed(0),
-                onChanged: (newValue) {
-                  setState(() {
-                    expectedParticipants = newValue;
-                  });
-                },
-              ),
-              ElevatedButton(
-                onPressed: () => _selectDates(context),
-                child: Text(datePrompt),
-              ),
-              ElevatedButton(
-                onPressed: () => selectedTime(context),
-                child: Text(timePrompt),
-              ),
-            ],
+                ElevatedButton(
+                  onPressed: () => _selectDates(context),
+                  child: Text(datePrompt),
+                ),
+                ElevatedButton(
+                  onPressed: () => selectedTime(context),
+                  child: Text(timePrompt),
+                ),
+              ],
+            ),
           ),
         ),
       ),

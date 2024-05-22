@@ -26,6 +26,8 @@ class EventDetailPage extends StatelessWidget {
             child: Column(
               children: [
                 Container(
+                  height: (MediaQuery.of(context).orientation == Orientation.portrait ?
+                    200 : 100),
                   width: MediaQuery.of(context).size.width * 1,
                   child: Image.asset(event.img, fit: BoxFit.cover),
                   decoration: BoxDecoration(

@@ -326,6 +326,7 @@ class _HomePageState extends State<HomePage> {
   DateTime birthDate = DateTime.now();
   String datePrompt = "Select date of birth*";
   String invalidPartecipant = "";
+  
 
   Future<void> _selectDates(BuildContext context, setState) async {
     final DateTime? picked = await showDatePicker(
@@ -573,12 +574,14 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                         return InkWell(
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Card(
+                            child: Card( 
                               child: Column(
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(top: 10),
                                     child: Container(
+                                      height: (MediaQuery.of(context).orientation == Orientation.portrait ?
+                                        200 : 100),
                                       width:
                                           MediaQuery.of(context).size.width * 0.8,
                                       child:
@@ -857,15 +860,15 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 200,
-                          height: 200,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: MediaQuery.of(context).size.width * 0.7,
                           child: PieChart(
                             PieChartData(
                               centerSpaceRadius: 0.0,
-                              sectionsSpace: 3.0,
+                              sectionsSpace: 3,
                               sections: [
                                 PieChartSectionData(
-                                  radius: 80,
+                                  radius: MediaQuery.of(context).size.width * 0.3,
                                   value: numeroPartecipantiAttivi()[0].toDouble(), 
                                   title: '${(numeroPartecipantiAttivi()[0] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%', 
                                   gradient: RadialGradient(
@@ -876,7 +879,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                   ),
                                   ),
                                 PieChartSectionData(
-                                  radius: 70,
+                                  radius: MediaQuery.of(context).size.width * 0.27,
                                   value: numeroPartecipantiAttivi()[1].toDouble(), 
 
                                   gradient: RadialGradient(
@@ -921,8 +924,9 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 300,
-                          height: 300,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: (MediaQuery.of(context).orientation == Orientation.portrait ?
+                              300 : 200),
                           child: LineChart(
                                     LineChartData(
                                       lineTouchData: LineTouchData(
@@ -1004,6 +1008,8 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
           child: const Icon(Icons.add),
         ),
         bottomNavigationBar: NavigationBar(
+          height: (MediaQuery.of(context).orientation == Orientation.portrait ?
+                  100 : 50),
           backgroundColor: Colors.teal,
           onDestinationSelected: (int index) {
             setState(() {
