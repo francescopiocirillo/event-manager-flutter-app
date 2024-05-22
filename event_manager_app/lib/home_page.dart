@@ -712,7 +712,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                       Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => NewEvent(event: ev,)))
+                                                  builder: (context) => NewEvent(event: ev, events: events)))
                                           .then((newEvent) {
                                         if (newEvent != null) {
                                             setState(() {
@@ -987,7 +987,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => NewEvent()))
+                    MaterialPageRoute(builder: (context) => NewEvent(events: events)))
                 .then((newEvent) {
               print(newEvent);
               if (newEvent != null) {

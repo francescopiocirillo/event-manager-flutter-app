@@ -6,15 +6,16 @@ import 'package:intl/intl.dart';
 
 class NewEvent extends StatefulWidget {
   final Event? event;
-  const NewEvent({super.key,  this.event});
+  final List<Event>? events;
+  const NewEvent({super.key,  this.event, this.events});
 
   @override
-  State<NewEvent> createState() => _NewEventState(event: event);
+  State<NewEvent> createState() => _NewEventState(event: event, events: events);
 }
 class _NewEventState extends State<NewEvent> {
 
   final Event? event;
-  
+  final List<Event>? events;
   
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
@@ -29,7 +30,7 @@ class _NewEventState extends State<NewEvent> {
   TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
   double expectedParticipants = 0;
   
-  _NewEventState({this.event}){
+  _NewEventState({this.event, this.events}){
     if(event != null){
       pageTitle= (event?.title)!;
       if(event?.img == "assets/lavoro.jpg"){
@@ -170,8 +171,8 @@ class _NewEventState extends State<NewEvent> {
                     hintText: 'Insert event name',
                   ),
                   validator: (value) {
-                    if(value == null || value.isEmpty){
-                      return 'Please, insert event name';
+                    if(value == null || value.isEmpty || (event == null && events!.any((element) => element.title == textNomeController.text))){
+                      return 'Please, insert event name (duplicate names not allowed)';
                     }
                   },
                 ), 
