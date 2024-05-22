@@ -347,6 +347,9 @@ class _HomePageState extends State<HomePage> {
         invalidPartecipant= "ERROR: In order to add a new partecipant you should have to insert all the fields";      
       });
     }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Data are being processed...'), backgroundColor: Colors.teal),
+            );
       Person new_participant = Person(
         name: controller1.text,
         lastName: controller2.text,
@@ -980,8 +983,6 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
             ),
           )
         ),
-
-
         ][currentPageIndex],
         floatingActionButton: FloatingActionButton(
           onPressed: () {

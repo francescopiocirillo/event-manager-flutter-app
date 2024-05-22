@@ -182,7 +182,7 @@ class _NewEventState extends State<NewEvent> {
                   controller: textDescrizioneController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                    hintText: 'Inserire la descrizione dell\'evento',
+                    hintText: 'Insert event description',
                   ),
                   maxLines: 5,
                   validator: (value) {
