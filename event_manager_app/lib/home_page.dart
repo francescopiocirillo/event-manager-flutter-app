@@ -860,15 +860,15 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 200,
-                          height: 200,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: MediaQuery.of(context).size.width * 0.7,
                           child: PieChart(
                             PieChartData(
                               centerSpaceRadius: 0.0,
-                              sectionsSpace: 3.0,
+                              sectionsSpace: 3,
                               sections: [
                                 PieChartSectionData(
-                                  radius: 80,
+                                  radius: MediaQuery.of(context).size.width * 0.3,
                                   value: numeroPartecipantiAttivi()[0].toDouble(), 
                                   title: '${(numeroPartecipantiAttivi()[0] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%', 
                                   gradient: RadialGradient(
@@ -879,7 +879,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                                   ),
                                   ),
                                 PieChartSectionData(
-                                  radius: 70,
+                                  radius: MediaQuery.of(context).size.width * 0.27,
                                   value: numeroPartecipantiAttivi()[1].toDouble(), 
 
                                   gradient: RadialGradient(
@@ -924,8 +924,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: (MediaQuery.of(context).orientation == Orientation.portrait ?
-                              280 : 700),
+                          width: MediaQuery.of(context).size.width * 0.8,
                           height: (MediaQuery.of(context).orientation == Orientation.portrait ?
                               300 : 200),
                           child: LineChart(

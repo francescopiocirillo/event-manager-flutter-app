@@ -431,6 +431,4 @@ class DatabaseHelper {
     return db.update('event', new_ev.toMap(), where: 'title = ?', whereArgs: [old_ev.title]);
   }
 
-  // Tutti gli altri metodi
-  // ...
 }
