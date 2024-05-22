@@ -1,4 +1,4 @@
-import 'package:event_manager_app/home_page.dart';
+import 'package:thirty_green_events/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -344,7 +344,7 @@ class DatabaseHelper {
   }
   Future<Database> _initDatabase() async {
     print("INITDATABASE");
- //   await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
+    //await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
     return openDatabase(
       join(await getDatabasesPath(), 'mio_database.db'),
       version: 1,

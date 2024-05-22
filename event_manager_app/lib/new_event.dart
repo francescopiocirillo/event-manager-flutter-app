@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:event_manager_app/home_page.dart';
+import 'package:thirty_green_events/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

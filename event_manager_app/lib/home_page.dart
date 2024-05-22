@@ -1,9 +1,9 @@
 import 'dart:collection';
 import 'dart:ffi';
 
-import 'package:event_manager_app/database_helper.dart';
-import 'package:event_manager_app/event_detail_page.dart';
-import 'package:event_manager_app/new_event.dart';
+import 'package:thirty_green_events/database_helper.dart';
+import 'package:thirty_green_events/event_detail_page.dart';
+import 'package:thirty_green_events/new_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
