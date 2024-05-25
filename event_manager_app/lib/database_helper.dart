@@ -342,6 +342,7 @@ class DatabaseHelper {
     print("deletedb" + path);
     return databaseFactory.deleteDatabase(path);
   }
+
   Future<Database> _initDatabase() async {
     print("INITDATABASE");
     //await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
@@ -366,21 +367,7 @@ class DatabaseHelper {
   Future<void> insertEvento(Event ev) async {
     final db = await database;
     print("sto inserendo evento");
-    await db.insert(
-      'event',
-      ev.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    final ev_participants = ev.participants;
-    for (Person ev_participant in ev_participants) {
-      final ev_participant_map = ev_participant.toMap();
-      ev_participant_map['event_title'] = ev.title;
-      await db.insert(
-        'participant',
-        ev_participant_map,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
+    insertEventoForDB(ev, db);
   }
 
   Future<void> insertEventoForDB(Event ev, Database db) async {
@@ -409,6 +396,11 @@ class DatabaseHelper {
     return db.delete("event", where: "title = ?", whereArgs: ev_title);
   }
 
+  Future<int> updateEvent(Event old_ev, Event new_ev) async {
+    final db = await database;
+    return db.update('event', new_ev.toMap(), where: 'title = ?', whereArgs: [old_ev.title]);
+  }
+
   Future<void> insertParticipant(String eventTitle, Person participant) async {
     final db = await database;
     print("sto inserendo partecipante");
@@ -425,10 +417,4 @@ class DatabaseHelper {
     final db = await database;
     return db.rawUpdate('UPDATE Participant SET event_title = ? WHERE NAME = ?', [new_title, old_title]);
   }
-
-  Future<int> updateEvent(Event old_ev, Event new_ev) async {
-    final db = await database;
-    return db.update('event', new_ev.toMap(), where: 'title = ?', whereArgs: [old_ev.title]);
-  }
-
 }

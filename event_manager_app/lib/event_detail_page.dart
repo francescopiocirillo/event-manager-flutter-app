@@ -5,7 +5,9 @@ import  'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class EventDetailPage extends StatelessWidget {
+
   final Event event; 
+  
   const EventDetailPage({super.key, required this.event});
 
   @override

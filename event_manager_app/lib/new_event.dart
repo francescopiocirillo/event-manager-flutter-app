@@ -12,14 +12,13 @@ class NewEvent extends StatefulWidget {
   @override
   State<NewEvent> createState() => _NewEventState(event: event, events: events);
 }
+
 class _NewEventState extends State<NewEvent> {
 
   final Event? event;
   final List<Event>? events;
-  
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
-  
   String pageTitle = "New event";
   String datePrompt = "Select dates of the event";
   String timePrompt = "Select event's beginning hour";
@@ -29,8 +28,9 @@ class _NewEventState extends State<NewEvent> {
   DateTime endDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
   double expectedParticipants = 0;
-  
-  _NewEventState({this.event, this.events}){
+  final _formKey = GlobalKey<FormState>();
+
+  _NewEventState({this.event, this.events}) {
     if(event != null){
       pageTitle= (event?.title)!;
       if(event?.img == "assets/lavoro.jpg"){
@@ -50,7 +50,6 @@ class _NewEventState extends State<NewEvent> {
       timePrompt = "Selected hour: " + 
           DateFormat('h:mm a').format(DateTime(1,1,1, (event?.startHour.hour)!.toInt(), (event?.startHour.minute)!.toInt()));
     }
-
   }
 
   Future<void> _selectDates(BuildContext context) async {
@@ -89,7 +88,7 @@ class _NewEventState extends State<NewEvent> {
     textDescrizioneController.dispose();
     super.dispose();
   }
-  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
