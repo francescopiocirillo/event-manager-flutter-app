@@ -10,6 +10,10 @@ class EventDetailPage extends StatelessWidget {
   
   const EventDetailPage({super.key, required this.event});
 
+  /**Questa pagina mostra tutti i dettagli relativi all'evento d'interesse.
+   * Si può selezionare l'evento cliccando sulle card della dashboard e 
+   * della schermata Gestione evento. Si naviga per stack.
+   */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +28,9 @@ class EventDetailPage extends StatelessWidget {
                      ),
         ),
         body: SafeArea(
+          /**La Safearea contiene tutte le informazioni, esse sono divise
+           * in quattro sezioni delimitate dai divider
+           */
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -39,6 +46,7 @@ class EventDetailPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                /**prima sezione: le date e l'orario dell'evento disposti in orizzontale*/
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Row(
@@ -97,12 +105,15 @@ class EventDetailPage extends StatelessWidget {
                 ),
                 Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
+                /**seconda sezione: descrizione dell'evento */
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(event.description, textAlign: TextAlign.center),
                 ),
                 Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
+                /**terza sezione: grafico a torta che mostra la ercentuale di completamento
+                 *dei partecipanti con relativi numeri informativi*/
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
@@ -175,6 +186,11 @@ class EventDetailPage extends StatelessWidget {
                 ),
                 Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
+                /**quarta sezione: 
+                 * - se ci sono partecipanti registrati sono mostrati in questa sezione 
+                 *    con i relativi CircleAvatar,
+                 * - se l'evento non ha partecipanti attivi viene mostrata una frase di riempiento
+                 */
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Center(
@@ -190,12 +206,17 @@ class EventDetailPage extends StatelessWidget {
                   ),
                 ),
                 ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(), /*non si può scrollarre la lista, si scrolla solo l'intera pagina */
+                    shrinkWrap: true, /*listView occuperebbe tutto lo spazio disponibile nella SingleChildScrollView, 
+                      questo rigo riduce la lunghezza della lista esattamente a quella dei componenti che contiene*/
+                    physics: const NeverScrollableScrollPhysics(), /*non si può scrollarre la lista, si scrolla 
+                      solo l'intera pagina altimenti se si era in fondo alla schermata e la lista era abbastanza 
+                      lunga da occupare tutta l'altezza non si aveva più modo di scrollare l'intera schermata per 
+                      tornare in cima ma si poteva scrollare solo la lista rimanendo bloccati*/
                     itemCount: event.participants.length,
                     itemBuilder: (context, index) {
                       Person persona = event.participants[index]; 
                       return ListTile(
+                        /**l'elenco è scandito da dei cerchi che contengono l'iniziale del nome dell'invitato */
                         leading: CircleAvatar(
                           child: Text(persona.name[0]),
                         ),
