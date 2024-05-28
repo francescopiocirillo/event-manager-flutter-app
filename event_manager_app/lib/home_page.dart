@@ -1,18 +1,9 @@
-import 'dart:collection';
-import 'dart:ffi';
-
 import 'package:thirty_green_events/database_helper.dart';
 import 'package:thirty_green_events/event_detail_page.dart';
 import 'package:thirty_green_events/new_event.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';/*
-import 'package:pie_chart/pie_chart.dart';*/
+import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:path/path.dart' as pathdb;
-import 'package:sqflite/sqflite.dart';
 
 /**
  * Definizione della classe Person e della classe
