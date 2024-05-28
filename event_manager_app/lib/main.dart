@@ -13,8 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Thirty Green Events',
-      home: HomePage(),
-      theme: ThemeData(
+      home: const HomePage(),
+      theme: ThemeData( /** definiamo un tema per l'intera applicazione */
         colorScheme: ColorScheme.fromSwatch(
           accentColor: Colors.red[300],
           backgroundColor: Colors.teal[50],

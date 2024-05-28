@@ -4,13 +4,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  
+  /** la connessione al database è stata gestita per mezzo di un Singleton */
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   static Database? _database;
   Future<Database> get database async => _database ??= await _initDatabase();
 
+  /** questa lista contiene degli eventi di esempio che vengono inseriti in automatico
+   * in modo da permettere una valutazione agevole dell'app
+   */
   List<Event> events = [
     Event(
       title: 'Workshop di Fotografia',
@@ -338,25 +341,25 @@ class DatabaseHelper {
     ),
   ];
 
+  /** funzione per l'eliminazione del database */
   Future<void> deleteDatabase(String path) {
-    print("deletedb" + path);
     return databaseFactory.deleteDatabase(path);
   }
 
+  /** funzione per l'inizializzazione del database */
   Future<Database> _initDatabase() async {
-    print("INITDATABASE");
     //await deleteDatabase(join(await getDatabasesPath(), 'mio_database.db'));
     return openDatabase(
       join(await getDatabasesPath(), 'mio_database.db'),
       version: 1,
       onCreate: (db, version) async {
-        print("ONCREATE");
         await db.execute(
           'CREATE TABLE event(title VARCHAR(20) PRIMARY KEY, description TEXT, startDate VARCHAR(50), endDate VARCHAR(50), startHour VARCHAR(50), expectedParticipants INT, actualParticipants INT, img varchar(30));',
         );
         await db.execute(
           'CREATE TABLE participant(name VARCHAR(20), last_name VARCHAR(20), birth VARCHAR(20), event_title VARCHAR(20), PRIMARY KEY(name, last_name, event_title), FOREIGN KEY(event_title) REFERENCES event(title) ON DELETE CASCADE);',
         );
+        /** il seguente ciclo for serve a popolare il db con degli eventi di default per permettere una valutazione agevole dell'app */
         for(Event ev in events) {
           await insertEventoForDB(ev, db);
         }
@@ -364,14 +367,18 @@ class DatabaseHelper {
     );  
   }
   
+  /** questa funzione permette l'inserimento di un evento */
   Future<void> insertEvento(Event ev) async {
     final db = await database;
-    print("sto inserendo evento");
     insertEventoForDB(ev, db);
   }
 
+  /** questa funzione permette l'inserimento di un evento prima
+   * dell'inizializzazione dell'attributo database, utile nello
+   * specifico per il popolamento di default del database nella
+   * funzione onCreate
+   */
   Future<void> insertEventoForDB(Event ev, Database db) async {
-    print("sto inserendo evento");
     await db.insert(
       'event',
       ev.toMap(),
@@ -389,21 +396,22 @@ class DatabaseHelper {
     }
   }
 
+  /** questa funzione permette l'eliminazione di un evento dal db */
   Future<int> deleteEvento(Event ev) async {
     final db = await database;
-    print("elimina evento");
     List<Object?> ev_title = [ev.title];
     return db.delete("event", where: "title = ?", whereArgs: ev_title);
   }
 
+  /** questa funzione permette l'aggiornamento di un evento nel db */
   Future<int> updateEvent(Event old_ev, Event new_ev) async {
     final db = await database;
     return db.update('event', new_ev.toMap(), where: 'title = ?', whereArgs: [old_ev.title]);
   }
 
+  /** questa funzione permette l'inserimento di un partecipante al db */
   Future<void> insertParticipant(String eventTitle, Person participant) async {
     final db = await database;
-    print("sto inserendo partecipante");
     final ev_participant_map = participant.toMap();
     ev_participant_map['event_title'] = eventTitle;
     await db.insert(
@@ -413,6 +421,7 @@ class DatabaseHelper {
     );
   }
 
+  /** questa funzione permette l'aggiornamento di un partecipante nel db */
   Future<int> updateParticipants(String new_title, String old_title) async {
     final db = await database;
     return db.rawUpdate('UPDATE Participant SET event_title = ? WHERE NAME = ?', [new_title, old_title]);
