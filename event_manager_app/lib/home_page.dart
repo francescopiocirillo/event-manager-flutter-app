@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         color: Colors.tealAccent[600],
         barWidth: 5,
         dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: true, color: Colors.red.shade300.withOpacity(0.7)),
+        belowBarData: BarAreaData(show: true, color: Theme.of(context).colorScheme.secondary.withOpacity(0.7)),
         spots: lineGenerator('actual'),
       );
   
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(invalidParticipant, 
                     style: TextStyle(
-                      color: Colors.red[300], 
+                      color: Theme.of(context).colorScheme.error, 
                       fontWeight: FontWeight.bold),
                   )
               ],),
@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text("Filter by theme:"),
                     ToggleButtons(
-                      fillColor: Colors.teal,
+                      fillColor: Theme.of(context).colorScheme.primary,
                       isSelected: isSelectedThemeFilter,
                       onPressed: (int index) {
                         setState(() {
@@ -440,7 +440,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           title: Center(
             child: Text('Thirty Green Events',
             style: TextStyle(
@@ -655,9 +655,9 @@ class _HomePageState extends State<HomePage> {
                                       });
                                     },
                                     child: Text('Modify',
-                                            style: TextStyle(color: Colors.teal,
+                                            style: TextStyle(color: Theme.of(context).colorScheme.primary,
                                                             decoration: TextDecoration.underline,
-                                                            decorationColor: Colors.teal)
+                                                            decorationColor: Theme.of(context).colorScheme.primary)
                                          ),
                                   ),
                                   TextButton(
@@ -668,9 +668,9 @@ class _HomePageState extends State<HomePage> {
                                       applyFilters(false);
                                     },
                                     child: Text('Delete',
-                                              style: TextStyle(color: Colors.red[300],
+                                              style: TextStyle(color: Theme.of(context).colorScheme.secondary,
                                                               decoration: TextDecoration.underline,
-                                                              decorationColor: Colors.red)
+                                                              decorationColor: Theme.of(context).colorScheme.secondary)
                                           ),
                                   ),
                                 ],
@@ -711,7 +711,7 @@ class _HomePageState extends State<HomePage> {
                                                     ev.img == 'assets/romantico.jpg' ? 
                                                       Icons.favorite_rounded : 
                                                       Icons.cases_rounded),
-                                                color: Colors.teal ),
+                                                color: Theme.of(context).colorScheme.primary ),
                                             ),                                            
                                             Text( "${ev.participants[index].name} ${ev.participants[index].lastName} ${DateFormat('yMd').format(ev.participants[index].birth)}"),
                                           ],
@@ -757,7 +757,7 @@ class _HomePageState extends State<HomePage> {
                     textAlign: TextAlign.center,
                     ),
                     Text("Number of events saved", 
-                      style: TextStyle(color: Colors.teal, 
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary, 
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,),
@@ -769,7 +769,7 @@ class _HomePageState extends State<HomePage> {
                     Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
                     Text("Percentage of active participation in events", 
-                      style: TextStyle(color: Colors.teal, 
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary, 
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,),
@@ -833,7 +833,7 @@ class _HomePageState extends State<HomePage> {
                     Divider(color: Colors.teal.shade100,
                             thickness: 2.0,),
                     Text("Temporal distribution of partecipants during the year", 
-                      style: TextStyle(color: Colors.teal, 
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary, 
                                 fontSize: 20, 
                                 fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,),
@@ -927,7 +927,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: NavigationBar(
           height: (MediaQuery.of(context).orientation == Orientation.portrait ?
                   100 : 50),
-          backgroundColor: Colors.teal,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;

@@ -14,7 +14,7 @@ class EventDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
           title: Text(event.title, 
             style: TextStyle(
@@ -34,7 +34,7 @@ class EventDetailPage extends StatelessWidget {
                   child: Image.asset(event.img, fit: BoxFit.cover),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.teal, 
+                      color: Theme.of(context).colorScheme.primary, 
                       width: 15, 
                     ),
                   ),
@@ -46,7 +46,7 @@ class EventDetailPage extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.teal,
+                              color: Theme.of(context).colorScheme.primary,
                               borderRadius: BorderRadius.circular(20) 
                             ),
                             child: Padding(
@@ -112,7 +112,7 @@ class EventDetailPage extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.teal,
+                              color: Theme.of(context).colorScheme.primary,
                               borderRadius: BorderRadius.circular(20) 
                             ),
                             child: Padding(
