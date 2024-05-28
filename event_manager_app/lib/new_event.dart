@@ -26,10 +26,14 @@ class _NewEventState extends State<NewEvent> {
   DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
+  TimeOfDay startTime = const TimeOfDay(hour: 12, minute: 00);
   double expectedParticipants = 0;
   final _formKey = GlobalKey<FormState>();
 
+  /** la pagina deve essere diversa se si sta aggiungendo un nuovo evento
+   * o modificando uno preesistente, per questo è stata implementata della
+   * logica nel costruttore dello stato
+   */
   _NewEventState({this.event, this.events}) {
     if(event != null){
       pageTitle= (event?.title)!;
@@ -52,6 +56,9 @@ class _NewEventState extends State<NewEvent> {
     }
   }
 
+  /** questa funzione mostra il DateRangePicker e opportunamente aggiorna lo stato
+   * sulla base dell'input dell'utente
+   */
   Future<void> _selectDates(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context, 
@@ -68,6 +75,9 @@ class _NewEventState extends State<NewEvent> {
     }
   }
 
+  /** questa funzione mostra lo showTimePicker e opportunamente aggiorna lo stato
+   * sulla base dell'input dell'utente
+   */
   Future<void> selectedTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context, 
@@ -93,6 +103,8 @@ class _NewEventState extends State<NewEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      /** l'AppBar mostra il nome dell'evento in modifica oppure 'New event' 
+       * se si sta aggiungendo un nuovo evento */
       appBar: AppBar(
         backgroundColor: Colors.teal,
         centerTitle: true,
@@ -104,19 +116,19 @@ class _NewEventState extends State<NewEvent> {
                   ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView( //per permettere la visualizzazione anche con lo schermo in orizzontale
-          child: Form(
+        child: SingleChildScrollView( /** per permettere la visualizzazione anche con lo schermo in orizzontale */
+          child: Form( /** il form contiene come child una Column con children i vari campi per creare/modificare un evento */
             key: _formKey,
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text("Choose your event's theme!",
                         style: TextStyle(color: Colors.teal, 
                                     fontSize: 20, 
                                     fontWeight: FontWeight.bold,)),
                 ),
-                Row(
+                Row( /** il tema si sceglie selezionando un'immagine tra le tre disponibili, questo setta la variabile _selectedImage */
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
@@ -128,12 +140,12 @@ class _NewEventState extends State<NewEvent> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(
+                            border: Border.all(/** il bordo dell'immagine cambia colore se questa è selezionata */
                               width: 3, 
                               color: _selectedImage == 0 ? 
                                 Colors.red:Colors.transparent), 
                               shape: BoxShape.circle),
-                          child: CircleAvatar(
+                          child: const CircleAvatar(
                             backgroundImage: AssetImage("assets/lavoro.jpg"), 
                             radius: 60,),
                         ),
@@ -148,7 +160,7 @@ class _NewEventState extends State<NewEvent> {
                         },
                         child: Container(
                           decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                          child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
+                          child: const CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
                         ),
                       ),
                     ),
@@ -161,7 +173,7 @@ class _NewEventState extends State<NewEvent> {
                         },
                         child: Container(
                           decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                          child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
+                          child: const CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
                         ),
                       ),
                     ),
@@ -175,10 +187,12 @@ class _NewEventState extends State<NewEvent> {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                       hintText: 'Insert event name',
                     ),
+                    /** il validor si assicura che venga inserito un nome valido (non sono ammessi duplicati) */
                     validator: (value) {
                       if(value == null || value.isEmpty || (event == null && events!.any((element) => element.title == textNomeController.text))){
                         return 'Please, insert event name (duplicate names not allowed)';
                       }
+                      return null;
                     },
                   ), 
                 ),
@@ -195,14 +209,15 @@ class _NewEventState extends State<NewEvent> {
                       if(value == null || value.isEmpty){
                         return 'Please, insert event description';
                       }
+                      return null;
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
                   child: Text("Insert number of expected participants"),
                 ),
-                Slider(
+                Slider( /** per la selezione del numero di partecipanti si è scelto uno Slider */
                   value: expectedParticipants,
                   min: 0,
                   max: 500,
@@ -214,7 +229,7 @@ class _NewEventState extends State<NewEvent> {
                     });
                   },
                 ),
-                ElevatedButton(
+                ElevatedButton( /** per la scelta della data e dell'ora ci sono appositi ElevatedButton che chiamano delle funzioni */
                   onPressed: () => _selectDates(context),
                   child: Text(datePrompt),
                 ),
@@ -227,6 +242,9 @@ class _NewEventState extends State<NewEvent> {
           ),
         ),
       ),
+      /** questo button permette di aggiungere/modificare l'evento, 
+       * validando i form e poi inviando l'evento alla pagina home dove vengono 
+       * aggiornati il database e la lista visibile */
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if(_formKey.currentState!.validate()){

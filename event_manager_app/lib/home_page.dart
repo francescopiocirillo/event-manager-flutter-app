@@ -693,7 +693,7 @@ class _HomePageState extends State<HomePage> {
                                                 DatabaseHelper.instance.insertEvento(newEvent);
                                                 DatabaseHelper.instance.updateParticipants(newEvent.title, ev.title);
                                                 DatabaseHelper.instance.deleteEvento(ev);
-                                              } //WORK IN PROGRESS
+                                              }
                                               else {
                                                 DatabaseHelper.instance.updateEvent(ev, newEvent);
                                               }
