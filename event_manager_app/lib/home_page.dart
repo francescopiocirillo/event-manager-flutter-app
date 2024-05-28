@@ -1,78 +1,11 @@
 import 'package:thirty_green_events/database_helper.dart';
+import 'package:thirty_green_events/event.dart';
 import 'package:thirty_green_events/event_detail_page.dart';
 import 'package:thirty_green_events/new_event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-
-/**
- * Definizione della classe Person e della classe
- * Event per la memorizzazione di eventi e 
- * relativi partecipanti
- */
-class Person {
-  String name;
-  String lastName;
-  DateTime birth;
-
-  Person({
-    required this.name,
-    required this.lastName,
-    required this.birth
-  });
-
-  Map<String, Object?> toMap() {
-    return {
-      'name': name,
-      'last_name': lastName,
-      'birth': birth.toString(),
-    };
-  }
-
-  @override
-  String toString() {
-    return 'Person{name: $name, last_name: $lastName, birth: $birth}';
-  }
-}
-
-class Event {
-  String title;
-  String description;
-  DateTime startDate;
-  DateTime endDate;
-  TimeOfDay startHour;
-  int expectedParticipants;
-  int actualParticipants;
-  String img;
-  List<Person> participants = [];
-
-  Event(
-      {required this.title,
-      required this.description,
-      required this.startDate,
-      required this.endDate,
-      required this.startHour,
-      required this.expectedParticipants,
-      required this.actualParticipants,
-      required this.img,
-      this.participants = const []});
-
-  void setParticipants(List<Person> participants) {
-    this.participants = participants;
-  }
-
-  Map<String, Object?> toMap() {
-    return {'title': title, 'description': description, 'startDate': startDate.toString(), 
-            'endDate': endDate.toString(), 'startHour': startHour.toString(), 'expectedParticipants': expectedParticipants, 
-            'actualParticipants': actualParticipants, 'img': img};
-  }
-
-  @override
-  String toString() {
-    return 'Event{title: $title, description: $description, startDate: $startDate, endDate: $endDate, startHour: $startHour, expectedParticipants: $expectedParticipants, actualParticipants: $actualParticipants, img: $img}';
-  }
-
-}
+import 'package:thirty_green_events/person.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

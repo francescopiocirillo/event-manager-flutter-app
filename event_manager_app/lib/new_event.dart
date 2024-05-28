@@ -1,6 +1,6 @@
-import 'package:thirty_green_events/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:thirty_green_events/event.dart';
 
 class NewEvent extends StatefulWidget {
   final Event? event;

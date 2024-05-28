@@ -1,7 +1,8 @@
-import 'package:thirty_green_events/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:thirty_green_events/event.dart';
+import 'package:thirty_green_events/person.dart';
 
 class DatabaseHelper {
   /** la connessione al database è stata gestita per mezzo di un Singleton */

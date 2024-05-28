@@ -1,7 +1,8 @@
-import 'package:thirty_green_events/home_page.dart';
 import 'package:fl_chart/fl_chart.dart';
 import  'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:thirty_green_events/event.dart';
+import 'package:thirty_green_events/person.dart';
 
 class EventDetailPage extends StatelessWidget {
 
