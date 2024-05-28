@@ -62,6 +62,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   /** Metodi e funzioni relative alla prima pagina (Dashboard) */
+  /** questa funzione preleva eventi e partecipanti dal db in modo
+   * da popolare la lista che viene visualizzata
+   */
   void _fetchEventi() async {
     final db = DatabaseHelper.instance;
     final List<Map<String, dynamic>> maps =
@@ -106,19 +109,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /** questa funzione permette di convertire una stringa in un oggetto TimeOfDay */
   TimeOfDay parseTimeOfDay(String time) {
     final format = RegExp(r'^([0-9]{2}):([0-9]{2})$');
     final match = format.firstMatch(time.toString().substring(10, time.toString().length-1));
     if (match != null) {
       final hour = int.parse(match.group(1)!);
       final minute = int.parse(match.group(2)!);
-
       return TimeOfDay(hour: hour, minute: minute);
     } else {
       throw FormatException("Invalid time format");
     }
   }
 
+  /** questa funzione permette di aprire un AlertDialog per aggiungere un nuovo
+   * partecipante ad un evento
+   */
   Future<Person?> openAddParticipantDialog(eventTitle) => showDialog<Person>(
     context: context,
     builder: (context) {
@@ -178,6 +184,9 @@ class _HomePageState extends State<HomePage> {
     }
   );
 
+  /** questa funzione permette di selezionare una data per il compleanno di 
+   * un partecipante attraverso un DatePicker
+   */
   Future<void> _selectDates(BuildContext context, setState) async {
     final DateTime? picked = await showDatePicker(
       context: context, 
@@ -192,6 +201,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /** questa funzione gestisce l'aggiunta di un nuovo partecipante ad un evento */
   void submitAddPerson(setState, eventTitle) {
     if(controller1.text == "" || controller2.text == "" || birthDate.isAtSameMomentAs(DateTime.now()) ){
       setState(() {
@@ -222,6 +232,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   /** Metodi e funzioni relative alla seconda pagina (Gestione evento) */
+  /** questa funzione filtra gli eventi sulla base del contenuto della searchbar */
   void filterEvents(String query) {
     setState(() {
       filteredEvents = events
@@ -230,6 +241,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /** questa funzione filtra gli eventi sulla base del contenuto della searchbar 
+   * e dei temi selezionati, l'attributo close indica se bisogna chiudere una finestra
+   * di dialogo oppure se non è necessario
+   */
   void applyFilters(close) {
     filterEvents(searchBarController.text);
     setState(() {
@@ -275,6 +290,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /** questa funzione apre una finestra di dialogo per la selezione
+   * dei temi desidarati per l'applicazione di filtri agli eventi
+   */
   Future<Person?> openApplyFiltersDialog() => showDialog<Person>(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -316,6 +334,10 @@ class _HomePageState extends State<HomePage> {
         ));
 
   /** Metodi e funzioni relative alla quarta pagina (Statistiche) */
+  /** questa funzione restituisce un array di due valori, il primo è il
+   * numero totale di partecipanti a tutti gli eventi, il secondo è il numero
+   * di partecipanti ancora non registrati a tutti gli eventi
+   */
   List<int> numeroPartecipantiAttivi() {
     List<int> numeri= [0,0];
     int i;
@@ -326,6 +348,9 @@ class _HomePageState extends State<HomePage> {
     return numeri;
   }
 
+  /** restituisce il numero totale di partecipanti effettivi o attesi 
+   * (a seconda della stringa tipo) per il mese fornito come parametro
+  */
   double numLineChart(int mese, String tipo){
     List<double> partecipanti= [0,0];
     int i;
@@ -345,6 +370,7 @@ class _HomePageState extends State<HomePage> {
     return partecipanti[ret];
   }
 
+  /** fornisce una lista di punti per un linechart */
   List<FlSpot> lineGenerator(String tipo){
     List<FlSpot> punti = [];
     int i=0;
@@ -354,6 +380,7 @@ class _HomePageState extends State<HomePage> {
     return punti;
   }
 
+  /** questa funzione genera le etichette sull'asse x del LineChart */
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
@@ -411,8 +438,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("suresure");
-    print(isSelectedTogglePastIncomingEvents.length);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
@@ -424,6 +449,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: <Widget>[
+          /** prima pagina */
           SafeArea(
               child: Column(
             children: [
