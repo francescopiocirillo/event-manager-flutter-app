@@ -747,6 +747,14 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           )),
+          /**terza schermata : statistiche 
+           * -una statistica che mostra quanti eventi sono registrati sull'app
+           * -un grafico a torta che mostra la percentuale di partecipanti reale 
+           * rispetto a quelli attesi considerando tutti gli eventi registrati sull'app
+           * -un garfico temporale che mostra due linee per mettere in comparazione 
+           * il numero di partecipanti attesi rispetto a quelli realmente iscritti 
+           * nei diversi mesi
+           */
           SafeArea(
           child: SingleChildScrollView(
             child: Column(
@@ -755,11 +763,11 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      Text("Here you can find all the statistics about your events!",
-                    style: TextStyle(color: Colors.teal[800], 
-                                    fontSize: 30, 
-                                    fontWeight: FontWeight.bold,),
-                    textAlign: TextAlign.center,
+                    Text("Here you can find all the statistics about your events!",
+                      style: TextStyle(color: Colors.teal[800], 
+                                      fontSize: 30, 
+                                      fontWeight: FontWeight.bold,),
+                      textAlign: TextAlign.center,
                     ),
                     Text("Number of events saved", 
                       style: TextStyle(color: Theme.of(context).colorScheme.primary, 
@@ -782,15 +790,20 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
+                          /**i SizedBox evitano l'Overflow per i grafici della libreria flchart.
+                           * Le dimensioni sono relative alla dimensione dellos chermo per 
+                           * garantire un comportamento responsivo e ottimizzare la visualizzazione 
+                           * da dispositivi differenti
+                          */
                           width: MediaQuery.of(context).size.width * 0.7,
                           height: MediaQuery.of(context).size.width * 0.7,
                           child: PieChart(
                             PieChartData(
-                              centerSpaceRadius: 0.0,
-                              sectionsSpace: 3,
+                              centerSpaceRadius: 0.0, /*spazio vuoto al centro del grafico nullo per ottenere un pie chart */
+                              sectionsSpace: 3, /* spazio di separazione sta le differenti sezioni */
                               sections: [
                                 PieChartSectionData(
-                                  radius: MediaQuery.of(context).size.width * 0.3,
+                                  radius: MediaQuery.of(context).size.width * 0.3, /*demensione del raggio della sezione*/
                                   value: numeroPartecipantiAttivi()[0].toDouble(), 
                                   title: '${(numeroPartecipantiAttivi()[0] / (numeroPartecipantiAttivi()[0]+numeroPartecipantiAttivi()[1]) * 100).toStringAsFixed(1)}%', 
                                   gradient: RadialGradient(
@@ -801,9 +814,8 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   ),
                                 PieChartSectionData(
-                                  radius: MediaQuery.of(context).size.width * 0.27,
+                                  radius: MediaQuery.of(context).size.width * 0.27, /*demensione del raggio della sezione*/
                                   value: numeroPartecipantiAttivi()[1].toDouble(), 
-
                                   gradient: RadialGradient(
                                     colors: [
                                       Colors.tealAccent.shade700,
@@ -815,6 +827,7 @@ class _HomePageState extends State<HomePage> {
                             
                           ),
                         ),
+                        /*legenda del grafico a torta*/
                         Column(
                           children: [
                             Icon(Icons.person_2_rounded, color: Colors.tealAccent ),
@@ -848,11 +861,12 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.8,
                           height: (MediaQuery.of(context).orientation == Orientation.portrait ?
-                              300 : 200),
+                              300 : 200), /*comportamento differente per adattare il grafico a una visione orizzontale dello schermo*/
                           child: LineChart(
                                     LineChartData(
                                       lineTouchData: LineTouchData(
                                         enabled: true,
+                                        /**cliccando sul grafico si possono sapere gli esatti valore nel punto d'interesse */
                                         touchTooltipData: LineTouchTooltipData(    
                                           tooltipRoundedRadius: 20.0,
                                           fitInsideHorizontally: true,
@@ -861,6 +875,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       borderData: FlBorderData(show: false), 
                                       lineBarsData: linesBarsData,
+                                      /**vengono renderizzati solo i titoli inferiore e sinistro
+                                       * - quello inferirore (asse x) mostra le iniziali dei mesi contenute in bottomTitleWidgets
+                                       * - quello sinistro (asse y) mostra i valori di riferimento che variano in base ai 
+                                       *     dati presenti nell'app*/
                                       titlesData: FlTitlesData(
                                         bottomTitles: AxisTitles(
                                           sideTitles: SideTitles(
@@ -868,12 +886,10 @@ class _HomePageState extends State<HomePage> {
                                             reservedSize: 32,
                                             interval: 1,
                                             getTitlesWidget: bottomTitleWidgets,
-                                            
                                           ),
                                         ),
                                         rightTitles: const AxisTitles(
                                           sideTitles: SideTitles(showTitles: false),
-
                                         ),
                                         topTitles: const AxisTitles(
                                           sideTitles: SideTitles(showTitles: false),
@@ -883,6 +899,7 @@ class _HomePageState extends State<HomePage> {
                                     
                                   ),
                         ),
+                        /**legenda per grafico temporale*/
                         Column(
                           children: [
                             Icon(Icons.person_2_rounded, color: Colors.tealAccent ),
@@ -903,7 +920,6 @@ class _HomePageState extends State<HomePage> {
                         )
                       ],
                     )],
-                  
                   ),
             )]
             ),

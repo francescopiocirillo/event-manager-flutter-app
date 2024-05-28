@@ -155,6 +155,7 @@ class EventDetailPage extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
+                          /**i SizedBox evitano l'Overflow per i grafici della libreria flchart  */
                       width: 150,
                       height: 150,
                       child: PieChart(
