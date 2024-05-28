@@ -94,7 +94,7 @@ class _NewEventState extends State<NewEvent> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.teal,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         centerTitle: true,
         title: Text(pageTitle, 
             style: TextStyle(
@@ -112,7 +112,7 @@ class _NewEventState extends State<NewEvent> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Choose your event's theme!",
-                        style: TextStyle(color: Colors.teal, 
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary, 
                                     fontSize: 20, 
                                     fontWeight: FontWeight.bold,)),
                 ),
@@ -131,7 +131,7 @@ class _NewEventState extends State<NewEvent> {
                             border: Border.all(
                               width: 3, 
                               color: _selectedImage == 0 ? 
-                                Colors.red:Colors.transparent), 
+                                Theme.of(context).colorScheme.secondary :Colors.transparent), 
                               shape: BoxShape.circle),
                           child: CircleAvatar(
                             backgroundImage: AssetImage("assets/lavoro.jpg"), 
@@ -147,8 +147,14 @@ class _NewEventState extends State<NewEvent> {
                           });
                         },
                         child: Container(
-                          decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 1 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                          child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 60,),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 3, 
+                              color: _selectedImage == 1 ? 
+                                Theme.of(context).colorScheme.secondary:Colors.transparent), 
+                              shape: BoxShape.circle),
+                          child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), 
+                            radius: 60,),
                         ),
                       ),
                     ),
@@ -160,8 +166,14 @@ class _NewEventState extends State<NewEvent> {
                           });
                         },
                         child: Container(
-                          decoration: BoxDecoration(border: Border.all(width: 3, color: _selectedImage == 2 ? Colors.red:Colors.transparent), shape: BoxShape.circle),
-                          child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 60,),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 3, 
+                              color: _selectedImage == 2 ? 
+                              Theme.of(context).colorScheme.secondary:Colors.transparent), 
+                              shape: BoxShape.circle),
+                          child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), 
+                            radius: 60,),
                         ),
                       ),
                     ),
