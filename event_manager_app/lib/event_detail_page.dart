@@ -160,12 +160,12 @@ class EventDetailPage extends StatelessWidget {
                       height: 150,
                       child: PieChart(
                       PieChartData(
-                        centerSpaceRadius: 40.0,
-                        sectionsSpace: 2.0,
+                        centerSpaceRadius: 40.0, /*spazio vuoto al centro del grafico per ottenere un donut chart */
+                        sectionsSpace: 2.0, /*spazio tra sezioni differenti */
                         sections: [
                           PieChartSectionData(
                             showTitle: false,
-                            radius: 10,
+                            radius: 10, /*spessore della singola sezione */
                             value: (event.expectedParticipants - event.actualParticipants).toDouble(),
                             color: Colors.teal[100],),
                           PieChartSectionData(
@@ -175,7 +175,7 @@ class EventDetailPage extends StatelessWidget {
                                 Colors.tealAccent.shade100,
                               ],
                             ),
-                            radius: 15,
+                            radius: 15, /*spessore della singola sezione */
                             value: event.actualParticipants.toDouble(),  
                             title: '${(event.actualParticipants / (event.expectedParticipants) * 100).toStringAsFixed(1)}%'),],
                       ),
