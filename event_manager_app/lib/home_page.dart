@@ -471,17 +471,20 @@ class _HomePageState extends State<HomePage> {
                           }
                         });
                       },
-                      children: <Widget>[
+                      children: const <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Text("Past events"),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Text("Incoming events"),
                         ),
                       ],
                     ),
+                    /** la prima pagina contiene la lista degli eventi, a seconda della scelta del
+                     * ToggleButton cambiano gli eventi mostrati
+                     */
                     Expanded(
                       child: ListView.builder(
                           itemCount: events.length,
@@ -542,6 +545,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                 ),
+                                /** onTap su un Evento porta alla quinta pagina dedicata a quell'evento */
                                 onTap: () {
                                   Navigator.push(
                                       context,
@@ -551,7 +555,12 @@ class _HomePageState extends State<HomePage> {
                                 },
                               );
                             } else {
-                              return SizedBox.shrink();
+                              /** visto che bisogna necessariamente specificare il numero di elementi
+                               * in un listview.builder questo è stato impostato al numero totale di eventi
+                               * ma il numero reale mostrato è più basso in quanto si distingue tra passati e futuri,
+                               * gli elementi in eccesso sono SizedBox.shrink() che in Flutter è l'equivalente di un Widget nullo
+                               */
+                              return const SizedBox.shrink();
                             }
                           }
                         ),
@@ -559,194 +568,204 @@ class _HomePageState extends State<HomePage> {
                   ],
                 )
             ),
-          //management page
+          /** seconda pagina */
           SafeArea(
-              child: Column(
-            children: [
-              Row(
+              child:
+              Column(
                 children: [
-                  Expanded(
-                    child: SearchBar(
-                      leading: const Icon(Icons.search_rounded),
-                      onChanged: (value) {
-                        applyFilters(false);
-                      },
-                      hintText: "Search by title",
-                      controller: searchBarController,
-                      
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: SizedBox(
-                      height: 55,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 7, // Imposta l'elevazione desiderata
-                        ),
-                        onPressed: () {
-                          openApplyFiltersDialog();
-                        },
-                        child: Text("Filter")),
-                      
-                    ),
-                  )
-                ],
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: filteredEvents.length,
-                    itemBuilder: (context, index) {
-                      print("EVENTI LUNGHEZZA:" + filteredEvents.length.toString());
-                      print("EVENTI LUNGHEZZA:" + filteredEvents.toString());
-                      final eventsIndex = index;
-                      Event ev = filteredEvents[eventsIndex];
-                      return InkWell(
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 8),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(8),
-                                      decoration:
-                                          BoxDecoration(shape: BoxShape.circle),
-                                      child: CircleAvatar(
-                                        backgroundImage: AssetImage(ev.img),
-                                        radius: 60,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: ListTile(
-                                        title: Text(
-                                          ev.title,
-                                        ),
-                                        subtitle: Text(
-                                            "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                    clipBehavior: Clip.antiAlias,
-                                    onPressed: () {
-                                      Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => NewEvent(event: ev, events: events)))
-                                          .then((newEvent) {
-                                        if (newEvent != null) {
-                                            setState(() {
-                                              newEvent.participants = ev.participants;
-                                              newEvent.actualParticipants = ev.actualParticipants;
-                                              if(newEvent.title != ev.title) {
-                                                DatabaseHelper.instance.insertEvento(newEvent);
-                                                DatabaseHelper.instance.updateParticipants(newEvent.title, ev.title);
-                                                DatabaseHelper.instance.deleteEvento(ev);
-                                              }
-                                              else {
-                                                DatabaseHelper.instance.updateEvent(ev, newEvent);
-                                              }
-                                              events.remove(ev);
-                                              events.add(newEvent);
-                                              applyFilters(false);
-                                            });
-                                        }
-                                      });
-                                    },
-                                    child: Text('Modify',
-                                            style: TextStyle(color: Theme.of(context).colorScheme.primary,
-                                                            decoration: TextDecoration.underline,
-                                                            decorationColor: Theme.of(context).colorScheme.primary)
-                                         ),
-                                  ),
-                                  TextButton(
-                                    clipBehavior: Clip.antiAlias,
-                                    onPressed: () {
-                                      DatabaseHelper.instance.deleteEvento(ev);
-                                      events.remove(ev);
-                                      applyFilters(false);
-                                    },
-                                    child: Text('Delete',
-                                              style: TextStyle(color: Theme.of(context).colorScheme.secondary,
-                                                              decoration: TextDecoration.underline,
-                                                              decorationColor: Theme.of(context).colorScheme.secondary)
-                                          ),
-                                  ),
-                                ],
-                              ),
-                            ExpansionPanelList(
-                              animationDuration:
-                                Duration(milliseconds: 1000),
-                              expandedHeaderPadding:
-                                EdgeInsets.all(8),
-                              children: [
-                                ExpansionPanel(
-                                  headerBuilder: (context, isExpanded) {
-                                    return Text( (isExpanded? "Hide Attendees" : "View Attendees" ), 
-                                        textAlign: TextAlign.right, 
-                                        style: TextStyle(
-                                          height: 3.3, /*per allineare il testo alla freccia*/
-                                          color: const Color.fromARGB(225, 62,158,135),
-                                          fontWeight: FontWeight.bold)  
-                                        );
-                                  }, 
-                                  canTapOnHeader: true,
-                                  body: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: ev.participants.length, 
-                                    itemBuilder: (context, index) {
-                                    
-                                    return Padding(
-                                      padding: const EdgeInsets.only(left: 20.0),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: 8.0),
-                                              child: Icon( (ev.img == 'assets/cena.png' ? 
-                                                    Icons.fastfood_rounded : 
-                                                    ev.img == 'assets/romantico.jpg' ? 
-                                                      Icons.favorite_rounded : 
-                                                      Icons.cases_rounded),
-                                                color: Theme.of(context).colorScheme.primary ),
-                                            ),                                            
-                                            Text( "${ev.participants[index].name} ${ev.participants[index].lastName} ${DateFormat('yMd').format(ev.participants[index].birth)}"),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },),
-                                  isExpanded: _isOpen[index],
-                                ),
-                              ],
-                              expansionCallback: (i, isOpen) =>
-                                setState(() =>
-                                  _isOpen[index] = !_isOpen[index]
-                                )
-                            ),
-                          ],
+                  /** la seconda pagina presenta in alto una Row che contiene la SearchBar e il tasto
+                   * per accedere al menu di scelta del filtro
+                   */
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SearchBar(
+                          leading: const Icon(Icons.search_rounded),
+                          onChanged: (value) {
+                            applyFilters(false);
+                          },
+                          hintText: "Search by title",
+                          controller: searchBarController,
+                          
                         ),
                       ),
-                      onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      EventDetailPage(event: ev)));
-                        },
-                      );
-                    }),
-              ),
-            ],
-          )),
+                      Padding(
+                        padding: const EdgeInsets.all(7.0),
+                        child: SizedBox(
+                          height: 55,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 7, // Imposta l'elevazione desiderata
+                            ),
+                            onPressed: () {
+                              openApplyFiltersDialog();
+                            },
+                            child: Text("Filter")),
+                          
+                        ),
+                      )
+                    ],
+                  ),
+                  Expanded(
+                    /** la pagina presenta la lista di tutti gli eventi che rientrano nella selezione
+                     * della searchbar e del filtro
+                     */
+                    child: ListView.builder(
+                        itemCount: filteredEvents.length,
+                        itemBuilder: (context, index) {
+                          final eventsIndex = index;
+                          Event ev = filteredEvents[eventsIndex];
+                          return InkWell(
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 8),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration:
+                                              BoxDecoration(shape: BoxShape.circle),
+                                          child: CircleAvatar(
+                                            backgroundImage: AssetImage(ev.img),
+                                            radius: 60,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Text(
+                                              ev.title,
+                                            ),
+                                            subtitle: Text(
+                                                "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}"),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  /** per ogni evento è presente una Row con un TextButton per la modifica 
+                                   * dell'evento e un TextButton per l'eliminazione dello stesso
+                                  */
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                        clipBehavior: Clip.antiAlias,
+                                        onPressed: () {
+                                          Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => NewEvent(event: ev, events: events)))
+                                              .then((newEvent) {
+                                            if (newEvent != null) {
+                                                setState(() {
+                                                  newEvent.participants = ev.participants;
+                                                  newEvent.actualParticipants = ev.actualParticipants;
+                                                  if(newEvent.title != ev.title) {
+                                                    DatabaseHelper.instance.insertEvento(newEvent);
+                                                    DatabaseHelper.instance.updateParticipants(newEvent.title, ev.title);
+                                                    DatabaseHelper.instance.deleteEvento(ev);
+                                                  }
+                                                  else {
+                                                    DatabaseHelper.instance.updateEvent(ev, newEvent);
+                                                  }
+                                                  events.remove(ev);
+                                                  events.add(newEvent);
+                                                  applyFilters(false);
+                                                });
+                                            }
+                                          });
+                                        },
+                                        child: Text('Modify',
+                                                style: TextStyle(color: Theme.of(context).colorScheme.primary,
+                                                                decoration: TextDecoration.underline,
+                                                                decorationColor: Theme.of(context).colorScheme.primary)
+                                            ),
+                                      ),
+                                      TextButton(
+                                        clipBehavior: Clip.antiAlias,
+                                        onPressed: () {
+                                          DatabaseHelper.instance.deleteEvento(ev);
+                                          events.remove(ev);
+                                          applyFilters(false);
+                                        },
+                                        child: Text('Delete',
+                                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary,
+                                                                  decoration: TextDecoration.underline,
+                                                                  decorationColor: Theme.of(context).colorScheme.secondary)
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                ExpansionPanelList(
+                                  animationDuration:
+                                    Duration(milliseconds: 1000),
+                                  expandedHeaderPadding:
+                                    EdgeInsets.all(8),
+                                  children: [
+                                    ExpansionPanel(
+                                      headerBuilder: (context, isExpanded) {
+                                        return Text( (isExpanded? "Hide Attendees" : "View Attendees" ), 
+                                            textAlign: TextAlign.right, 
+                                            style: TextStyle(
+                                              height: 3.3, /*per allineare il testo alla freccia*/
+                                              color: const Color.fromARGB(225, 62,158,135),
+                                              fontWeight: FontWeight.bold)  
+                                            );
+                                      }, 
+                                      canTapOnHeader: true,
+                                      body: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: ev.participants.length, 
+                                        itemBuilder: (context, index) {
+                                        
+                                        return Padding(
+                                          padding: const EdgeInsets.only(left: 20.0),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 8.0),
+                                                  child: Icon( (ev.img == 'assets/cena.png' ? 
+                                                        Icons.fastfood_rounded : 
+                                                        ev.img == 'assets/romantico.jpg' ? 
+                                                          Icons.favorite_rounded : 
+                                                          Icons.cases_rounded),
+                                                    color: Theme.of(context).colorScheme.primary ),
+                                                ),                                            
+                                                Text( "${ev.participants[index].name} ${ev.participants[index].lastName} ${DateFormat('yMd').format(ev.participants[index].birth)}"),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },),
+                                      isExpanded: _isOpen[index],
+                                    ),
+                                  ],
+                                  expansionCallback: (i, isOpen) =>
+                                    setState(() =>
+                                      _isOpen[index] = !_isOpen[index]
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EventDetailPage(event: ev)));
+                            },
+                          );
+                        }),
+                  ),
+                ],
+              )
+          ),
           SafeArea(
           child: SingleChildScrollView(
             child: Column(
