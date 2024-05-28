@@ -1,24 +1,22 @@
-import 'dart:ffi';
-
-import 'package:thirty_green_events/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:thirty_green_events/event.dart';
 
 class NewEvent extends StatefulWidget {
   final Event? event;
-  const NewEvent({super.key,  this.event});
+  final List<Event>? events;
+  const NewEvent({super.key,  this.event, this.events});
 
   @override
-  State<NewEvent> createState() => _NewEventState(event: event);
+  State<NewEvent> createState() => _NewEventState(event: event, events: events);
 }
+
 class _NewEventState extends State<NewEvent> {
 
   final Event? event;
-  
-  
+  final List<Event>? events;
   final textNomeController = TextEditingController();
   final textDescrizioneController = TextEditingController();
-  
   String pageTitle = "New event";
   String datePrompt = "Select dates of the event";
   String timePrompt = "Select event's beginning hour";
@@ -26,10 +24,15 @@ class _NewEventState extends State<NewEvent> {
   DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  TimeOfDay startTime = TimeOfDay(hour: 12, minute: 00);
+  TimeOfDay startTime = const TimeOfDay(hour: 12, minute: 00);
   double expectedParticipants = 0;
-  
-  _NewEventState({this.event}){
+  final _formKey = GlobalKey<FormState>();
+
+  /** la pagina deve essere diversa se si sta aggiungendo un nuovo evento
+   * o modificando uno preesistente, per questo è stata implementata della
+   * logica nel costruttore dello stato
+   */
+  _NewEventState({this.event, this.events}) {
     if(event != null){
       pageTitle= (event?.title)!;
       if(event?.img == "assets/lavoro.jpg"){
@@ -49,9 +52,11 @@ class _NewEventState extends State<NewEvent> {
       timePrompt = "Selected hour: " + 
           DateFormat('h:mm a').format(DateTime(1,1,1, (event?.startHour.hour)!.toInt(), (event?.startHour.minute)!.toInt()));
     }
-
   }
 
+  /** questa funzione mostra il DateRangePicker e opportunamente aggiorna lo stato
+   * sulla base dell'input dell'utente
+   */
   Future<void> _selectDates(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context, 
@@ -68,6 +73,9 @@ class _NewEventState extends State<NewEvent> {
     }
   }
 
+  /** questa funzione mostra lo showTimePicker e opportunamente aggiorna lo stato
+   * sulla base dell'input dell'utente
+   */
   Future<void> selectedTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context, 
@@ -88,11 +96,13 @@ class _NewEventState extends State<NewEvent> {
     textDescrizioneController.dispose();
     super.dispose();
   }
-  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      /** l'AppBar mostra il nome dell'evento in modifica oppure 'New event' 
+       * se si sta aggiungendo un nuovo evento */
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         centerTitle: true,
@@ -104,19 +114,19 @@ class _NewEventState extends State<NewEvent> {
                   ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView( //per permettere la visualizzazione anche con lo schermo in orizzontale
-          child: Form(
+        child: SingleChildScrollView( /** per permettere la visualizzazione anche con lo schermo in orizzontale */
+          child: Form( /** il form contiene come child una Column con children i vari campi per creare/modificare un evento */
             key: _formKey,
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text("Choose your event's theme!",
-                        style: TextStyle(color: Theme.of(context).colorScheme.primary, 
+                        style: TextStyle(color: Colors.teal, 
                                     fontSize: 20, 
                                     fontWeight: FontWeight.bold,)),
                 ),
-                Row(
+                Row( /** il tema si sceglie selezionando un'immagine tra le tre disponibili, questo setta la variabile _selectedImage */
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
@@ -128,12 +138,12 @@ class _NewEventState extends State<NewEvent> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(
+                            border: Border.all(/** il bordo dell'immagine cambia colore se questa è selezionata */
                               width: 3, 
                               color: _selectedImage == 0 ? 
                                 Theme.of(context).colorScheme.secondary :Colors.transparent), 
                               shape: BoxShape.circle),
-                          child: CircleAvatar(
+                          child: const CircleAvatar(
                             backgroundImage: AssetImage("assets/lavoro.jpg"), 
                             radius: 60,),
                         ),
@@ -153,7 +163,7 @@ class _NewEventState extends State<NewEvent> {
                               color: _selectedImage == 1 ? 
                                 Theme.of(context).colorScheme.secondary:Colors.transparent), 
                               shape: BoxShape.circle),
-                          child: CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), 
+                          child: const CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), 
                             radius: 60,),
                         ),
                       ),
@@ -172,7 +182,7 @@ class _NewEventState extends State<NewEvent> {
                               color: _selectedImage == 2 ? 
                               Theme.of(context).colorScheme.secondary:Colors.transparent), 
                               shape: BoxShape.circle),
-                          child: CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), 
+                          child: const CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), 
                             radius: 60,),
                         ),
                       ),
@@ -187,10 +197,12 @@ class _NewEventState extends State<NewEvent> {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                       hintText: 'Insert event name',
                     ),
+                    /** il validor si assicura che venga inserito un nome valido (non sono ammessi duplicati) */
                     validator: (value) {
-                      if(value == null || value.isEmpty){
-                        return 'Please, insert event name';
+                      if(value == null || value.isEmpty || (event == null && events!.any((element) => element.title == textNomeController.text))){
+                        return 'Please, insert event name (duplicate names not allowed)';
                       }
+                      return null;
                     },
                   ), 
                 ),
@@ -207,14 +219,15 @@ class _NewEventState extends State<NewEvent> {
                       if(value == null || value.isEmpty){
                         return 'Please, insert event description';
                       }
+                      return null;
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
                   child: Text("Insert number of expected participants"),
                 ),
-                Slider(
+                Slider( /** per la selezione del numero di partecipanti si è scelto uno Slider */
                   value: expectedParticipants,
                   min: 0,
                   max: 500,
@@ -226,7 +239,7 @@ class _NewEventState extends State<NewEvent> {
                     });
                   },
                 ),
-                ElevatedButton(
+                ElevatedButton( /** per la scelta della data e dell'ora ci sono appositi ElevatedButton che chiamano delle funzioni */
                   onPressed: () => _selectDates(context),
                   child: Text(datePrompt),
                 ),
@@ -239,6 +252,9 @@ class _NewEventState extends State<NewEvent> {
           ),
         ),
       ),
+      /** questo button permette di aggiungere/modificare l'evento, 
+       * validando i form e poi inviando l'evento alla pagina home dove vengono 
+       * aggiornati il database e la lista visibile */
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if(_formKey.currentState!.validate()){
