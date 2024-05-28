@@ -451,109 +451,114 @@ class _HomePageState extends State<HomePage> {
         body: <Widget>[
           /** prima pagina */
           SafeArea(
-              child: Column(
-            children: [
-              ToggleButtons(
-                isSelected: isSelectedTogglePastIncomingEvents,
-                onPressed: (index) {
-                  setState(() {
-                    for (int buttonIndex = 0;
-                        buttonIndex < isSelectedTogglePastIncomingEvents.length;
-                        buttonIndex++) {
-                      if (buttonIndex == index) {
-                        isSelectedTogglePastIncomingEvents[buttonIndex] = true;
-                      } else {
-                        isSelectedTogglePastIncomingEvents[buttonIndex] = false;
-                      }
-                    }
-                  });
-                },
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Past events"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Incoming events"),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: events.length,
-                    itemBuilder: (context, index) {
-                      final eventsIndex = index;
-                      Event ev = events[eventsIndex];
-                      if (isSelectedTogglePastIncomingEvents[0] &&
-                              ev.endDate.compareTo(DateTime.now()) < 0 ||
-                          isSelectedTogglePastIncomingEvents[1] &&
-                              ev.endDate.compareTo(DateTime.now()) >= 0) {
-                        return InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Card( 
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: Container(
-                                      height: (MediaQuery.of(context).orientation == Orientation.portrait ?
-                                        200 : 100),
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.8,
-                                      child:
-                                          Image.asset(ev.img, fit: BoxFit.cover),
+              child:
+                Column(
+                  children: [
+                    /** in cima alla pagina ci sono dei ToggleButtons per scegliere se visualizzare 
+                     * gli eventi passati o quelli futuri */
+                    ToggleButtons(
+                      isSelected: isSelectedTogglePastIncomingEvents,
+                      onPressed: (index) {
+                        setState(() {
+                          for (int buttonIndex = 0;
+                              buttonIndex < isSelectedTogglePastIncomingEvents.length;
+                              buttonIndex++) {
+                            if (buttonIndex == index) {
+                              isSelectedTogglePastIncomingEvents[buttonIndex] = true;
+                            } else {
+                              isSelectedTogglePastIncomingEvents[buttonIndex] = false;
+                            }
+                          }
+                        });
+                      },
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Past events"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Incoming events"),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: events.length,
+                          itemBuilder: (context, index) {
+                            final eventsIndex = index;
+                            Event ev = events[eventsIndex];
+                            if (isSelectedTogglePastIncomingEvents[0] &&
+                                    ev.endDate.compareTo(DateTime.now()) < 0 ||
+                                isSelectedTogglePastIncomingEvents[1] &&
+                                    ev.endDate.compareTo(DateTime.now()) >= 0) {
+                              return InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Card( 
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: Container(
+                                            height: (MediaQuery.of(context).orientation == Orientation.portrait ?
+                                              200 : 100),
+                                            width:
+                                                MediaQuery.of(context).size.width * 0.8,
+                                            child:
+                                                Image.asset(ev.img, fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                            ev.title,
+                                          ),
+                                          subtitle: Text(
+                                              "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}\nParticipants ${ev.actualParticipants} of ${ev.expectedParticipants}"),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Text(ev.description),
+                                        ),
+                                        ElevatedButton(
+                                          child: Text('new participant'),
+                                          onPressed: () async {
+                                            controller1.clear();
+                                            controller2.clear();
+                                            datePrompt = "Select date of birth";
+                                            invalidParticipant = "";
+                                            final person =
+                                                await openAddParticipantDialog(ev.title);
+                                            if (person == null) return;
+                                            setState(
+                                              () {
+                                                ev.actualParticipants++;
+                                                ev.participants.add(person);
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  ListTile(
-                                    title: Text(
-                                      ev.title,
-                                    ),
-                                    subtitle: Text(
-                                        "From ${DateFormat('EEE, MMM d, yyyy').format(ev.startDate)} at ${DateFormat('h:mm a').format(DateTime(1, 1, 1, ev.startHour.hour, ev.startHour.minute))}\nTo ${DateFormat('EEE, MMM d, yyyy').format(ev.endDate)}\nParticipants ${ev.actualParticipants} of ${ev.expectedParticipants}"),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(ev.description),
-                                  ),
-                                  ElevatedButton(
-                                    child: Text('new participant'),
-                                    onPressed: () async {
-                                      controller1.clear();
-                                      controller2.clear();
-                                      datePrompt = "Select date of birth";
-                                      invalidParticipant = "";
-                                      final person =
-                                          await openAddParticipantDialog(ev.title);
-                                      if (person == null) return;
-                                      setState(
-                                        () {
-                                          ev.actualParticipants++;
-                                          ev.participants.add(person);
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        EventDetailPage(event: ev)));
-                          },
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    }),
-              ),
-            ],
-          )),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EventDetailPage(event: ev)));
+                                },
+                              );
+                            } else {
+                              return SizedBox.shrink();
+                            }
+                          }
+                        ),
+                    ),
+                  ],
+                )
+            ),
           //management page
           SafeArea(
               child: Column(
