@@ -791,7 +791,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         SizedBox(
                           /**i SizedBox evitano l'Overflow per i grafici della libreria flchart.
-                           * Le dimensioni sono relative alla dimensione dellos chermo per 
+                           * Le dimensioni sono relative alla dimensione dello schermo per 
                            * garantire un comportamento responsivo e ottimizzare la visualizzazione 
                            * da dispositivi differenti
                           */
