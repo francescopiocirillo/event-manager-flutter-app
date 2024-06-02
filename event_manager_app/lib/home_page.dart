@@ -699,6 +699,9 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
+                                /**La parte inferirore di ogni card contiene un pannello che può nascondere o mostrare la lista dei partecipanti
+                                 * questa organizzazione serve per non affollare la view e fornire una visione d'insieme all'utente.
+                                 */
                                 ExpansionPanelList(
                                   animationDuration:
                                     Duration(milliseconds: 1000),
@@ -730,6 +733,7 @@ class _HomePageState extends State<HomePage> {
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.only(right: 8.0),
+                                                  /**gli elenchi puntati sono decorati dipendentemente dal tema scelto per l'evento*/
                                                   child: Icon( (ev.img == 'assets/cena.png' ? 
                                                         Icons.fastfood_rounded : 
                                                         ev.img == 'assets/romantico.jpg' ? 
