@@ -297,6 +297,11 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) => StatefulBuilder(
           builder: (context, setState) {
+            /**queste tre variabili servono per la responsività dell'alert:
+             * la dimensione dei circleAvatar che contiene variano in base alla dimensione dello
+             * schermo e in base all'orientamento del dispositivo per permettere di avere una ui 
+             * ideale per tutte le casistiche
+             */
             double radius = MediaQuery.of(context).size.width* 0.1;
             double redius_ori = MediaQuery.of(context).size.height*0.13;
             double radius_respo = (MediaQuery.of(context).orientation == Orientation.portrait ? radius : redius_ori) ;
