@@ -297,6 +297,9 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) => StatefulBuilder(
           builder: (context, setState) {
+            double radius = MediaQuery.of(context).size.width* 0.1;
+            double redius_ori = MediaQuery.of(context).size.height*0.13;
+            double radius_respo = (MediaQuery.of(context).orientation == Orientation.portrait ? radius : redius_ori) ;
             return AlertDialog(
               title: Text('Filter the events'),
               content: SingleChildScrollView(
@@ -311,10 +314,10 @@ class _HomePageState extends State<HomePage> {
                           isSelectedThemeFilter[index] = !isSelectedThemeFilter[index];
                         });
                       },
-                      children: const <Widget>[
-                        CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: 40),
-                        CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: 40),
-                        CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: 40),
+                      children: <Widget>[
+                        CircleAvatar(backgroundImage: AssetImage("assets/lavoro.jpg"), radius: radius_respo),
+                        CircleAvatar(backgroundImage: AssetImage("assets/cena.png"), radius: radius_respo),
+                        CircleAvatar(backgroundImage: AssetImage("assets/romantico.jpg"), radius: radius_respo),
                       ],
                     ),
                   ],
