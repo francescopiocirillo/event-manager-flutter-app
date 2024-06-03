@@ -965,7 +965,6 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(context,
                     MaterialPageRoute(builder: (context) => NewEvent(events: events)))
                 .then((newEvent) {
-              print(newEvent);
               if (newEvent != null) {
                 setState(() {
                   events.add(newEvent);
