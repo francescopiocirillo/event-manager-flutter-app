@@ -160,7 +160,7 @@ Developed by a **team of 2**, the project was a deep dive into collaborative, cr
     
 
 ```bash
-git clone https://github.com/yourusername/Thirty-Green-Events.git
+git clone https://github.com/francescopiocirillo/event-manager-flutter-app.git
 ```
 
 2. Open the project in your preferred IDE (e.g., VS Code, Android Studio)
