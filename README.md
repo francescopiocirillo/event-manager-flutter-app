@@ -1,4 +1,4 @@
-📱 Thirty-Green-Events: Cross-Platform Task & Event Management App
+📱 Thirty Green Events: Cross-Platform Task & Event Management App
 =======================================================
 
 > 🚀 A polished, **cross-platform mobile application** for managing personal events and tasks, built with **Flutter**. Developed in a **2-person team** over 3 months during a university course in **mobile development**, the app focuses on **usability**, **data handling**, and **responsive design**, while offering local storage and personalized statistics.
@@ -8,7 +8,7 @@
 📌 Overview
 -----------
 
-**Thirty-Green-Events** is a Flutter-powered mobile app designed to help users organize and manage their daily **tasks and events** across devices. The app integrates a **local SQLite database** for persistent data storage and presents **personalized statistics** to offer actionable insights. A complete wireframe guides user interaction, with special attention given to **responsive UI/UX** and **user-centered navigation**.
+**Thirty Green Events** is a Flutter-powered mobile app designed to help users organize and manage their daily **tasks and events** across devices. The app integrates a **local SQLite database** for persistent data storage and presents **personalized statistics** to offer actionable insights. A complete wireframe guides user interaction, with special attention given to **responsive UI/UX** and **user-centered navigation**.
 
 ### 📁 Project Highlights
 
