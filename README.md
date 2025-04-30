@@ -1,34 +1,37 @@
-📱 TaskBuddy: Mobile Task & Event Management App
-================================================
+📱 Thirty-Green-Events: Cross-Platform Task & Event Management App
+=======================================================
 
-> 🚀 A cross-platform **Flutter-based mobile application** for personal **task and event management**, developed during a **3-month university project** by a team of 2. The project focuses on **mobile-first design**, **local database management**, and **user-centric interaction flows**. It demonstrates skills in **mobile full-stack development**, **data handling**, and **responsive UX design**.
+> 🚀 A polished, **cross-platform mobile application** for managing personal events and tasks, built with **Flutter**. Developed in a **2-person team** over 3 months during a university course in **mobile development**, the app focuses on **usability**, **data handling**, and **responsive design**, while offering local storage and personalized statistics.
 
 * * *
 
 📌 Overview
 -----------
 
-**TaskBuddy** is a feature-rich **mobile application** for organizing personal **tasks and events**. Built using **Flutter** and powered by a local **SQLite** database, it provides an intuitive and efficient way to manage day-to-day activities. From task creation to personalized statistics, the app ensures a smooth and engaging user experience on both **Android and iOS platforms**.
+**Thirty-Green-Events** is a Flutter-powered mobile app designed to help users organize and manage their daily **tasks and events** across devices. The app integrates a **local SQLite database** for persistent data storage and presents **personalized statistics** to offer actionable insights. A complete wireframe guides user interaction, with special attention given to **responsive UI/UX** and **user-centered navigation**.
 
 ### 📁 Project Highlights
 
-* 📊 **SQLite Data Persistence**: Tasks, events, and user profiles are stored locally using a structured SQLite database.
+* 🧭 **Full Wireframe Mapping**: Pre-development wireframes shaped an intuitive and accessible UX.
+
+* 🗓️ **Task & Event Management**: Create, edit, and delete personal events or to-do items.
+
+* 🧑‍💻 **Focus on Usability**: Clean layout with adaptive components for different screen sizes.
     
-* 📈 **Personalized Statistics**: Users can view custom metrics and charts based on task completion and category distribution.
+* 📊 **Personalized Statistics**: View analytics based on task completion and scheduling behavior.
     
-* 🧭 **Interactive Wireframes**: Early-stage wireframes detail user journey and interface interactions.
-    
-* 🎯 **User-Centric Design**: Emphasis on responsive UI/UX, accessibility, and ease of use.
-    
+* 🗂️ **SQLite Integration**: Lightweight, offline-capable storage for user profiles and task data.
+        
+* 📱 **Cross-Platform Support**: Runs smoothly on both Android and iOS thanks to Flutter.    
 
 * * *
 
 🌍 Language Note
 ----------------
 
-All **internal documentation and code comments** are written in **Italian**, as the project was developed as part of a course at the **University of Salerno (Italy)**.
+All **code comments and documentation** are in **Italian**, as the project was developed for a university course at the **University of Salerno (Italy)**.
 
-Nevertheless, the **code follows clean architectural principles**, using meaningful class and method names that are easy to understand across languages.
+However, the **codebase follows standard Flutter/Dart best practices**, with consistent naming and modular organization for global readability.
 
 * * *
 
@@ -39,7 +42,9 @@ Nevertheless, the **code follows clean architectural principles**, using meaning
     
 * **Language**: Dart
     
-* **Database**: SQLite (using `sqflite` package)
+* **Database**: SQLite (via `sqflite` package)
+    
+* **Design Tools**: Figma / Draw.io / Pen-and-paper wireframes
     
 * **Version Control**: Git
     
@@ -51,33 +56,35 @@ Nevertheless, the **code follows clean architectural principles**, using meaning
 
 ### 👥 User Interaction
 
-* Create, edit, and delete tasks and events
+* Add, modify, and delete tasks and events
     
-* View categorized task lists and event timelines
+* Daily, weekly, and monthly views of tasks
     
-* Access personalized task statistics (e.g., completion rates, daily summaries)
+* Visual indicators for priority or overdue items
     
-* Simple and intuitive interface design
+* Profile-based data persistence with SQLite
     
-
-### 🛠️ Backend Logic (SQLite)
-
-* Persistent local storage of task/event data
-    
-* CRUD operations on all entities (tasks, events, profiles)
-    
-* Efficient data retrieval and filtering for performance
+* View statistics based on activity and behavior
     
 
-### 💻 Frontend Experience (Flutter)
+### 📊 Statistics Dashboard
 
-* Wireframe-based navigation structure
+* Completed vs. pending task ratio
     
-* Responsive design for multiple screen sizes
+* Time spent on categories (e.g., work, personal, study)
     
-* Reusable widgets and modular UI components
+* Weekly productivity graphs
     
-* Smooth animations and transitions for enhanced UX
+
+### 🎨 UI/UX Highlights
+
+* Fully responsive layout on all screen sizes
+    
+* Page transitions and smooth navigation
+    
+* Consistent color palette and component design
+    
+* Touch-friendly controls and intuitive icons
     
 
 * * *
@@ -85,17 +92,17 @@ Nevertheless, the **code follows clean architectural principles**, using meaning
 🧠 Development Process
 ----------------------
 
-> 👨‍💻 A collaborative 3-month mobile development project, built in an agile academic setting with weekly reviews and iterative development.
+> 👨‍💻 A collaborative, iterative project developed over 3 months by 2 students in a university mobile development course.
 
-* ✅ Requirements definition and user flow design
+* 📋 Wireframe design and UI planning
     
-* 🧩 Creation of detailed wireframes to map page interactions
+* 🔄 Agile-style development using Git
     
-* ⚙️ Implementation of Flutter UI and local database logic
+* 🗃️ Data modeling for events, tasks, and profiles
     
-* 📊 Integration of dynamic statistics views
+* ⚙️ Integration of SQLite and local state management
     
-* 🧪 Manual testing on both Android and iOS simulators
+* 📱 Manual testing across Android and iOS emulators
     
 
 * * *
@@ -103,72 +110,45 @@ Nevertheless, the **code follows clean architectural principles**, using meaning
 📋 Documentation
 ----------------
 
-You can find project documentation in the `docs/` folder, including:
+Project documentation is available in the `docs/` folder and includes:
 
-* 📄 UI/UX wireframes
+* 📜 Wireframe Diagrams (PDF)
     
-* 📘 Technical architecture overview
+* 🧾 Technical Report (PDF, Italian)
     
-* 📊 Task and event entity model
-    
-
-* * *
-
-🧱 Project Structure
---------------------
-
-```
-📦 taskbuddy/
-│
-├── 📁 lib/                  # Flutter application source code
-│   ├── main.dart           # Entry point of the application
-│   ├── models/             # Data models for Task, Event, and User
-│   ├── screens/            # Screens for UI interaction
-│   ├── widgets/            # Reusable UI components
-│   ├── db/                 # SQLite helper and queries
-│   └── utils/              # Utilities and constants
-│
-├── 📁 assets/              # App images, icons, and fonts
-│
-├── 📁 docs/                # Documentation and wireframes
-│   ├── wireframes.pdf
-│   └── technical_report.pdf
-│
-├── pubspec.yaml           # Flutter dependencies and metadata
-├── README.md
-└── LICENSE
-```
 
 * * *
 
 📸 Interface Preview
 --------------------
 
-Here are some examples of our mobile app pages:
+Here are some screenshots of the app in action:
 
-* Task Overview Page
+* Task List View
     
-* Create New Event
+* Task Statistics Page
     
-* Daily Statistics Visualization
+* Task Creation Page
     
-* Responsive Wireframe Flow
+* Profile Overview Page
     
 
-> _(You can update this section with actual screenshots when available.)_
+_(Add screenshots here by uploading them to your repo or linking from GitHub Issues if applicable)_
 
 * * *
 
 👥 Team Collaboration
 ---------------------
 
-Co-developed by a team of 2 students. Key team practices included:
+Developed by a **team of 2**, the project was a deep dive into collaborative, cross-platform app development. Responsibilities were divided across:
 
-* 🛠️ Version control using Git and GitHub
+* 📱 UI/UX Design and Frontend Flutter Work
     
-* 📋 Clear division of mobile UI and database logic
+* 🧠 Database Structure and Backend Logic
     
-* 📣 Regular feedback sessions and testing cycles
+* 🧪 Testing and Debugging
+    
+* 🔄 Continuous Integration via Git
     
 
 * * *
@@ -178,42 +158,46 @@ Co-developed by a team of 2 students. Key team practices included:
 
 1. Clone the repository:
     
-    ```bash
-    git clone https://github.com/your-username/taskbuddy.git
-    ```
+
+```bash
+git clone https://github.com/yourusername/Thirty-Green-Events.git
+```
+
+2. Open the project in your preferred IDE (e.g., VS Code, Android Studio)
     
-2. Open the project in your preferred IDE (e.g., **Android Studio** or **VS Code**).
+3. Install dependencies:
     
-3. Run `flutter pub get` to install dependencies.
+
+```bash
+flutter pub get
+```
+
+4. Run the app on a connected device or emulator:
     
-4. Launch the app on an emulator or physical device:
-    
-    ```bash
-    flutter run
-    ```
-    
+
+```bash
+flutter run
+```
 
 * * *
 
 📬 Contacts
 -----------
 
-✉️ For feedback, collaboration ideas, or questions — open an **Issue** or contact via LinkedIn! 🚀
+✉️ Got feedback or want to contribute? Feel free to open an **Issue** or submit a **Pull Request**!
 
 * * *
 
 📈 SEO Tags
 -----------
 
-```
-Flutter task management app, mobile productivity app, SQLite Flutter app, task planner mobile, event management app Flutter, cross-platform mobile app, full stack mobile app, mobile project Flutter SQLite, university mobile project, responsive mobile task app, Flutter UI/UX, mobile app development Italy, personalized task statistics app, local storage mobile Flutter, mobile database management app, mobile development project with SQLite, iOS Android Flutter app, academic mobile development
-```
+Flutter task management app, cross-platform mobile app, SQLite Flutter app, Flutter event planner, task statistics app, mobile task organizer, event tracking app, productivity tracker Flutter, university mobile app project, personal task scheduler, full-stack mobile development, mobile app with local database, Flutter UI/UX design, Android iOS compatible Flutter app.
 
 * * *
 
 📄 License
 ----------
 
-This project is licensed under the **MIT License** — feel free to use, adapt, and contribute while crediting the original creators.
+This project is licensed under the **MIT License** — free for use, modification, and distribution with credit.
 
-> ⭐ If you like the project, consider giving it a star on GitHub!
+> ⭐ If you found this project helpful, please consider giving it a star!
