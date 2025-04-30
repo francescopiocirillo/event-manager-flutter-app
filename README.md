@@ -191,7 +191,11 @@ flutter run
 📈 SEO Tags
 -----------
 
+```
+
 Flutter task management app, cross-platform mobile app, SQLite Flutter app, Flutter event planner, task statistics app, mobile task organizer, event tracking app, productivity tracker Flutter, university mobile app project, personal task scheduler, full-stack mobile development, mobile app with local database, Flutter UI/UX design, Android iOS compatible Flutter app.
+
+```
 
 * * *
 
