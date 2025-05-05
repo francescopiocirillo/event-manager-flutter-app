@@ -151,7 +151,7 @@ Project documentation is available in the `docs/` folder and includes:
 
 Here are some screenshots of the app in action:
 
-![thirty green events screenshots](https://github.com/user-attachments/assets/2e01d8b8-2635-4432-a8b0-b702683f538f)
+![thirty green events screenshots](https://github.com/user-attachments/assets/b4f924ab-b93a-4e98-8aa5-53b0a2051eca)
 
 * * *
 
