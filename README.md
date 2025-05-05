@@ -115,6 +115,33 @@ Project documentation is available in the `docs/` folder and includes:
 * 📜 Wireframe Diagrams (PDF)
     
 * 🧾 Technical Report (PDF, Italian)
+
+* * *
+
+🧱 **Detailed Project Structure**
+---------------------------------
+
+```
+📦 event_manager_app
+│
+├── 📁 assets                # Static assets like images, icons, etc.
+│
+├── 📁 lib                   # Main Dart codebase for the Flutter app
+│   ├── database_helper.dart     # SQLite database helper for local storage
+│   ├── event.dart               # Model class for event objects
+│   ├── event_detail_page.dart  # UI for viewing event details
+│   ├── home_page.dart          # Main homepage with event list
+│   ├── main.dart               # Entry point of the application
+│   ├── new_event.dart          # UI for creating a new event
+│   └── person.dart             # Model class for person/user data
+│
+├── 📁 docs                  # Project documentation and assets
+│   ├── Relazione tecnica Thirty Green Events.pdf # Technical report
+│   └── Wireframe Thirty Green Events.png    # Wireframe design
+│
+├── LICENSE                 # Project license
+└── README.md               # Project overview and setup instructions
+```
     
 
 * * *
