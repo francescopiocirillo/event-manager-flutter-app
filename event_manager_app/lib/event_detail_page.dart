@@ -130,7 +130,7 @@ class EventDetailPage extends StatelessWidget {
                               padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 children: [
-                                  Text('expected partecipant:'),
+                                  Text('expected participants:'),
                                   Text(event.expectedParticipants.toString()),
                                 ],
                               ),
@@ -145,7 +145,7 @@ class EventDetailPage extends StatelessWidget {
                               padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 children: [
-                                  Text('actual partecipant:'),
+                                  Text('actual participants:'),
                                   Text(event.actualParticipants.toString()),
                                 ],
                               ),
