@@ -151,16 +151,7 @@ Project documentation is available in the `docs/` folder and includes:
 
 Here are some screenshots of the app in action:
 
-* Task List View
-    
-* Task Statistics Page
-    
-* Task Creation Page
-    
-* Profile Overview Page
-    
-
-_(Add screenshots here by uploading them to your repo or linking from GitHub Issues if applicable)_
+![thirty green events screenshots](https://github.com/user-attachments/assets/2e01d8b8-2635-4432-a8b0-b702683f538f)
 
 * * *
 
