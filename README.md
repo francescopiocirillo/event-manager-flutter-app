@@ -220,6 +220,6 @@ Flutter task management app, cross-platform mobile app, SQLite Flutter app, Flut
 📄 License
 ----------
 
-This project is licensed under the **MIT License** — free for use, modification, and distribution with credit.
+This project is licensed under the **MIT License**; free for use, modification, and distribution with credit.
 
 > ⭐ If you found this project helpful, please consider giving it a star!
