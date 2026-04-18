@@ -7,6 +7,16 @@
 
 * * *
 
+📸 Interface Preview
+--------------------
+
+Here are some screenshots of the app in action:
+
+![thirty green events screenshots](https://github.com/user-attachments/assets/b4f924ab-b93a-4e98-8aa5-53b0a2051eca)
+
+
+* * *
+
 📌 Overview
 -----------
 
@@ -148,14 +158,6 @@ Project documentation is available in the `docs/` folder and includes:
 
 * * *
 
-📸 Interface Preview
---------------------
-
-Here are some screenshots of the app in action:
-
-![thirty green events screenshots](https://github.com/user-attachments/assets/b4f924ab-b93a-4e98-8aa5-53b0a2051eca)
-
-* * *
 
 👥 Team Collaboration
 ---------------------
